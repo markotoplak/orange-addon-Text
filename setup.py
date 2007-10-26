@@ -12,17 +12,21 @@ if distutils.ccompiler.get_default_compiler() in ['unix', 'mingw32']:
 else:
     extra_compile_args=[]
 
-setup(name = "Orange Text Setup",
+setup(name = "orngText",
       version = "0.1.0",
       description = "Text preprocessing utilities for Orange",
       packages = ['orngText'],
-      options={'build_ext':{'swig_opts':'-c++'}},
+      package_data = {'orngText':
+                      ['language_data/*.bin',
+                       'language_data/*.fsa',
+                       'language_data/*.txt']},
+      py_modules = [ 'orngTextWrapper' ],
       ext_modules = [
           Extension(
-              '_tmt',
+              '_orngTextWrapper',
               sources=[
-                  'orange/TMTOrange.i',
-                  'orange/TMTOrange.cpp',
+                  'orngTextWrapper/Wrapper_wrap.cxx',
+                  'orngTextWrapper/Wrapper.cpp',
                   'tmt/common/Common.cpp',
                   'tmt/common/Files.cpp',
                   'tmt/lemmatization/FSADictionary.cpp',
@@ -30,12 +34,12 @@ setup(name = "Orange Text Setup",
                   'tmt/lemmatization/Lemmatization.cpp',
                   'tmt/lemmatization/PorterStemmer.cpp',
                   'tmt/strings/StringUtils.cpp',
-                  'tmt/strings/UTF8Tokenizer.cpp'
+                  'tmt/strings/UTF8Tokenizer.cpp',
+                  'lemmagen/RdrLemmatizer.cpp'
                   ],
               extra_compile_args=extra_compile_args,
               include_dirs=['.'],
               define_macros=[('TMTNOZLIB','1'), ('NDEBUG', '1')],
-              swig_opts=['-c++'],
               language='c++')
           ]
       )
