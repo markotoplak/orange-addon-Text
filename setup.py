@@ -15,7 +15,7 @@ extra_compile_args=[
 setup(name = "orngText",
       version = "0.1.0",
       description = "Text preprocessing utilities for Orange",
-      packages = [ 'language_data' ],
+      packages = [ 'language_data', 'widgets' ],
       package_data = {'language_data':
                       ['*.bin',
                        '*.fsa',
