@@ -1,4 +1,4 @@
-%module(docstring="Interface to orange text functions.") orngTextWrapper
+%module(docstring="Interface to orange text functions.") wrapper
 %include "std_string.i"
 %include "std_vector.i"
 %{

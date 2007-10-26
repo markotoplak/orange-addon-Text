@@ -20,10 +20,9 @@ setup(name = "orngText",
                       ['language_data/*.bin',
                        'language_data/*.fsa',
                        'language_data/*.txt']},
-      py_modules = [ 'orngTextWrapper' ],
       ext_modules = [
           Extension(
-              '_orngTextWrapper',
+              'orngText._wrapper',
               sources=[
                   'orngTextWrapper/Wrapper_wrap.cxx',
                   'orngTextWrapper/Wrapper.cpp',
