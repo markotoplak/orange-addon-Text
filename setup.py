@@ -15,14 +15,17 @@ else:
 setup(name = "orngText",
       version = "0.1.0",
       description = "Text preprocessing utilities for Orange",
-      packages = ['orngText'],
-      package_data = {'orngText':
-                      ['language_data/*.bin',
-                       'language_data/*.fsa',
-                       'language_data/*.txt']},
+      packages = [ 'language_data' ],
+      package_data = {'language_data':
+                      ['*.bin',
+                       '*.fsa',
+                       '*.txt']},
+
+      py_modules = [ 'orngText', 'wrapper' ],
+      extra_path = "orngText",
       ext_modules = [
           Extension(
-              'orngText._wrapper',
+              '_wrapper',
               sources=[
                   'orngTextWrapper/Wrapper_wrap.cxx',
                   'orngTextWrapper/Wrapper.cpp',
