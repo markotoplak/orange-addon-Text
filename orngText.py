@@ -74,7 +74,7 @@ from xml.sax import handler, make_parser
 import os.path
 import re
 import orange
-import wrapper
+import orngTextWrapper
 import types
 
 def loadWordSet(f):
@@ -188,23 +188,23 @@ class Preprocess(object):
     __languageDataPath = os.path.join(os.path.dirname(__file__), 'language_data')
     langData = {
 #            'en' : (lambda x: x, [], lambda x: re.split(r'\b', x, re.DOTALL)),
-            'en' : (wrapper.lemmagen(os.path.join(__languageDataPath,'lem-en.bin')).lemmatizeText,
+            'en' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-en.bin')).lemmatizeText,
                     loadWordSet(os.path.join(__languageDataPath,'en_stopwords.txt')),
-                    wrapper.porter().lemmatizeText),
-            'hr' : (wrapper.lemmatizer(os.path.join(__languageDataPath,'lem-hr.fsa')).lemmatizeText,
+                    orngTextWrapper.porter().lemmatizeText),
+            'hr' : (orngTextWrapper.lemmatizer(os.path.join(__languageDataPath,'lem-hr.fsa')).lemmatizeText,
                     loadWordSet(os.path.join(__languageDataPath,'hr_stopwords.txt'))),
-            'fr' : (wrapper.lemmagen(os.path.join(__languageDataPath,'lem-fr.bin')).lemmatizeText,
+            'fr' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-fr.bin')).lemmatizeText,
                     loadWordSet(os.path.join(__languageDataPath,'fr_stopwords.txt'))),
-            'bg' : (wrapper.lemmagen(os.path.join(__languageDataPath,'lem-bg.bin')).lemmatizeText, set()),
-            'cs' : (wrapper.lemmagen(os.path.join(__languageDataPath,'lem-cs.bin')).lemmatizeText, set()),
-            'et' : (wrapper.lemmagen(os.path.join(__languageDataPath,'lem-et.bin')).lemmatizeText, set()),
-            'ge' : (wrapper.lemmagen(os.path.join(__languageDataPath,'lem-ge.bin')).lemmatizeText, set()),
-            'hu' : (wrapper.lemmagen(os.path.join(__languageDataPath,'lem-hu.bin')).lemmatizeText, set()),
-            'it' : (wrapper.lemmagen(os.path.join(__languageDataPath,'lem-it.bin')).lemmatizeText, set()),
-            'ro' : (wrapper.lemmagen(os.path.join(__languageDataPath,'lem-ro.bin')).lemmatizeText, set()),
-            'sl' : (wrapper.lemmagen(os.path.join(__languageDataPath,'lem-sl.bin')).lemmatizeText, set()),
-            'es' : (wrapper.lemmagen(os.path.join(__languageDataPath,'lem-es.bin')).lemmatizeText, set()),
-            'sr' : (wrapper.lemmagen(os.path.join(__languageDataPath,'lem-sr.bin')).lemmatizeText, set()),
+            'bg' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-bg.bin')).lemmatizeText, set()),
+            'cs' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-cs.bin')).lemmatizeText, set()),
+            'et' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-et.bin')).lemmatizeText, set()),
+            'ge' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-ge.bin')).lemmatizeText, set()),
+            'hu' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-hu.bin')).lemmatizeText, set()),
+            'it' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-it.bin')).lemmatizeText, set()),
+            'ro' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-ro.bin')).lemmatizeText, set()),
+            'sl' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-sl.bin')).lemmatizeText, set()),
+            'es' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-es.bin')).lemmatizeText, set()),
+            'sr' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-sr.bin')).lemmatizeText, set()),
             }
 
 def loadReuters(dirName):

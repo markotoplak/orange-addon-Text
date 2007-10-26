@@ -17,7 +17,8 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ******************************************************************************/
 #include "RdrLemmatizer.h"
-
+#include <cstdio>
+#include <stdexcept>
 //-------------------------------------------------------------------------------------------
 //helper macros for nicer code and faster execution
 #if AddrLen == 3
@@ -144,7 +145,19 @@ void RdrLemmatizer::LoadBinary(istream &is) {
 //-------------------------------------------------------------------------------------------
 //loads all data needed from binary file
 void RdrLemmatizer::LoadBinary(const char *acFileName) {
+	FILE *fp = fopen(acFileName, "rb");
+	if (!fp)
+		throw runtime_error("Can't open lemmatization dictionary.");
+	fread(&iDataLen, sizeof(int), 1, fp);
+	abData = new byte[iDataLen];
+	fread(abData, 1, iDataLen, fp);
+	fclose(fp);
+/*	// commented out because file streams sometimes won't work from python extension.
+
 	ifstream ifs(acFileName, ios_base::in | ios_base::binary);
+	if (!ifs)
+		throw runtime_error("Can't open file...");
 	LoadBinary(ifs);
 	ifs.close();
+*/
 }

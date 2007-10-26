@@ -2496,11 +2496,11 @@ static swig_module_info swig_module = {swig_types, 14, 0, 0, 0, 0};
 #endif
 
 /*-----------------------------------------------
-              @(target):= _wrapper.so
+              @(target):= _orngTextWrapper.so
   ------------------------------------------------*/
-#define SWIG_init    init_wrapper
+#define SWIG_init    init_orngTextWrapper
 
-#define SWIG_name    "_wrapper"
+#define SWIG_name    "_orngTextWrapper"
 
 #define SWIGVERSION 0x010331 
 #define SWIG_VERSION SWIGVERSION

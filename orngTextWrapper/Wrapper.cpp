@@ -161,6 +161,7 @@ std::string removeWords(const char *text, const std::vector<std::string> &words)
 
 lemmagen::lemmagen(const char *path) : lem(0)
 {
+	InitTMTOrange();
 	lem = new RdrLemmatizer();
 	lem->LoadBinary(path);
 }
@@ -172,7 +173,8 @@ lemmagen::~lemmagen()
 
 std::string lemmagen::getLemma(const char *s) const
 {
-	char *str = lem->Lemmatize(s, 0);
+	InitTMTOrange();
+	char *str = lem->Lemmatize(s);
 	std::string rez = str;
 	delete[] str;
 	return rez;

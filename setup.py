@@ -2,15 +2,15 @@ from distutils.core import setup
 from distutils.core import Extension
 import distutils.ccompiler
 
-if distutils.ccompiler.get_default_compiler() in ['unix', 'mingw32']:
-    extra_compile_args=[
+#if distutils.ccompiler.get_default_compiler() in ['unix', 'mingw32']:
+extra_compile_args=[
         '-fno-strict-aliasing',
         '-Wall',
         '-Wno-sign-compare',
         '-Woverloaded-virtual'
         ]
-else:
-    extra_compile_args=[]
+#else:
+#    extra_compile_args=[]
 
 setup(name = "orngText",
       version = "0.1.0",
@@ -21,11 +21,11 @@ setup(name = "orngText",
                        '*.fsa',
                        '*.txt']},
 
-      py_modules = [ 'orngText', 'wrapper' ],
+      py_modules = [ 'orngText', 'orngTextWrapper' ],
       extra_path = "orngText",
       ext_modules = [
           Extension(
-              '_wrapper',
+              '_orngTextWrapper',
               sources=[
                   'orngTextWrapper/Wrapper_wrap.cxx',
                   'orngTextWrapper/Wrapper.cpp',

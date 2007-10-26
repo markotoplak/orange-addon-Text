@@ -8,7 +8,7 @@
 Interface to orange text functions.
 """
 
-import _wrapper
+import _orngTextWrapper
 import new
 new_instancemethod = new.instancemethod
 try:
@@ -59,25 +59,25 @@ class PySwigIterator(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, PySwigIterator, name)
     def __init__(self): raise AttributeError, "No constructor defined"
     __repr__ = _swig_repr
-    __swig_destroy__ = _wrapper.delete_PySwigIterator
+    __swig_destroy__ = _orngTextWrapper.delete_PySwigIterator
     __del__ = lambda self : None;
-    def value(*args): return _wrapper.PySwigIterator_value(*args)
-    def incr(*args): return _wrapper.PySwigIterator_incr(*args)
-    def decr(*args): return _wrapper.PySwigIterator_decr(*args)
-    def distance(*args): return _wrapper.PySwigIterator_distance(*args)
-    def equal(*args): return _wrapper.PySwigIterator_equal(*args)
-    def copy(*args): return _wrapper.PySwigIterator_copy(*args)
-    def next(*args): return _wrapper.PySwigIterator_next(*args)
-    def previous(*args): return _wrapper.PySwigIterator_previous(*args)
-    def advance(*args): return _wrapper.PySwigIterator_advance(*args)
-    def __eq__(*args): return _wrapper.PySwigIterator___eq__(*args)
-    def __ne__(*args): return _wrapper.PySwigIterator___ne__(*args)
-    def __iadd__(*args): return _wrapper.PySwigIterator___iadd__(*args)
-    def __isub__(*args): return _wrapper.PySwigIterator___isub__(*args)
-    def __add__(*args): return _wrapper.PySwigIterator___add__(*args)
-    def __sub__(*args): return _wrapper.PySwigIterator___sub__(*args)
+    def value(*args): return _orngTextWrapper.PySwigIterator_value(*args)
+    def incr(*args): return _orngTextWrapper.PySwigIterator_incr(*args)
+    def decr(*args): return _orngTextWrapper.PySwigIterator_decr(*args)
+    def distance(*args): return _orngTextWrapper.PySwigIterator_distance(*args)
+    def equal(*args): return _orngTextWrapper.PySwigIterator_equal(*args)
+    def copy(*args): return _orngTextWrapper.PySwigIterator_copy(*args)
+    def next(*args): return _orngTextWrapper.PySwigIterator_next(*args)
+    def previous(*args): return _orngTextWrapper.PySwigIterator_previous(*args)
+    def advance(*args): return _orngTextWrapper.PySwigIterator_advance(*args)
+    def __eq__(*args): return _orngTextWrapper.PySwigIterator___eq__(*args)
+    def __ne__(*args): return _orngTextWrapper.PySwigIterator___ne__(*args)
+    def __iadd__(*args): return _orngTextWrapper.PySwigIterator___iadd__(*args)
+    def __isub__(*args): return _orngTextWrapper.PySwigIterator___isub__(*args)
+    def __add__(*args): return _orngTextWrapper.PySwigIterator___add__(*args)
+    def __sub__(*args): return _orngTextWrapper.PySwigIterator___sub__(*args)
     def __iter__(self): return self
-PySwigIterator_swigregister = _wrapper.PySwigIterator_swigregister
+PySwigIterator_swigregister = _orngTextWrapper.PySwigIterator_swigregister
 PySwigIterator_swigregister(PySwigIterator)
 
 class VectorStr(_object):
@@ -86,44 +86,44 @@ class VectorStr(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, VectorStr, name)
     __repr__ = _swig_repr
-    def iterator(*args): return _wrapper.VectorStr_iterator(*args)
+    def iterator(*args): return _orngTextWrapper.VectorStr_iterator(*args)
     def __iter__(self): return self.iterator()
-    def __nonzero__(*args): return _wrapper.VectorStr___nonzero__(*args)
-    def __len__(*args): return _wrapper.VectorStr___len__(*args)
-    def pop(*args): return _wrapper.VectorStr_pop(*args)
-    def __getslice__(*args): return _wrapper.VectorStr___getslice__(*args)
-    def __setslice__(*args): return _wrapper.VectorStr___setslice__(*args)
-    def __delslice__(*args): return _wrapper.VectorStr___delslice__(*args)
-    def __delitem__(*args): return _wrapper.VectorStr___delitem__(*args)
-    def __getitem__(*args): return _wrapper.VectorStr___getitem__(*args)
-    def __setitem__(*args): return _wrapper.VectorStr___setitem__(*args)
-    def append(*args): return _wrapper.VectorStr_append(*args)
-    def empty(*args): return _wrapper.VectorStr_empty(*args)
-    def size(*args): return _wrapper.VectorStr_size(*args)
-    def clear(*args): return _wrapper.VectorStr_clear(*args)
-    def swap(*args): return _wrapper.VectorStr_swap(*args)
-    def get_allocator(*args): return _wrapper.VectorStr_get_allocator(*args)
-    def begin(*args): return _wrapper.VectorStr_begin(*args)
-    def end(*args): return _wrapper.VectorStr_end(*args)
-    def rbegin(*args): return _wrapper.VectorStr_rbegin(*args)
-    def rend(*args): return _wrapper.VectorStr_rend(*args)
-    def pop_back(*args): return _wrapper.VectorStr_pop_back(*args)
-    def erase(*args): return _wrapper.VectorStr_erase(*args)
+    def __nonzero__(*args): return _orngTextWrapper.VectorStr___nonzero__(*args)
+    def __len__(*args): return _orngTextWrapper.VectorStr___len__(*args)
+    def pop(*args): return _orngTextWrapper.VectorStr_pop(*args)
+    def __getslice__(*args): return _orngTextWrapper.VectorStr___getslice__(*args)
+    def __setslice__(*args): return _orngTextWrapper.VectorStr___setslice__(*args)
+    def __delslice__(*args): return _orngTextWrapper.VectorStr___delslice__(*args)
+    def __delitem__(*args): return _orngTextWrapper.VectorStr___delitem__(*args)
+    def __getitem__(*args): return _orngTextWrapper.VectorStr___getitem__(*args)
+    def __setitem__(*args): return _orngTextWrapper.VectorStr___setitem__(*args)
+    def append(*args): return _orngTextWrapper.VectorStr_append(*args)
+    def empty(*args): return _orngTextWrapper.VectorStr_empty(*args)
+    def size(*args): return _orngTextWrapper.VectorStr_size(*args)
+    def clear(*args): return _orngTextWrapper.VectorStr_clear(*args)
+    def swap(*args): return _orngTextWrapper.VectorStr_swap(*args)
+    def get_allocator(*args): return _orngTextWrapper.VectorStr_get_allocator(*args)
+    def begin(*args): return _orngTextWrapper.VectorStr_begin(*args)
+    def end(*args): return _orngTextWrapper.VectorStr_end(*args)
+    def rbegin(*args): return _orngTextWrapper.VectorStr_rbegin(*args)
+    def rend(*args): return _orngTextWrapper.VectorStr_rend(*args)
+    def pop_back(*args): return _orngTextWrapper.VectorStr_pop_back(*args)
+    def erase(*args): return _orngTextWrapper.VectorStr_erase(*args)
     def __init__(self, *args): 
-        this = _wrapper.new_VectorStr(*args)
+        this = _orngTextWrapper.new_VectorStr(*args)
         try: self.this.append(this)
         except: self.this = this
-    def push_back(*args): return _wrapper.VectorStr_push_back(*args)
-    def front(*args): return _wrapper.VectorStr_front(*args)
-    def back(*args): return _wrapper.VectorStr_back(*args)
-    def assign(*args): return _wrapper.VectorStr_assign(*args)
-    def resize(*args): return _wrapper.VectorStr_resize(*args)
-    def insert(*args): return _wrapper.VectorStr_insert(*args)
-    def reserve(*args): return _wrapper.VectorStr_reserve(*args)
-    def capacity(*args): return _wrapper.VectorStr_capacity(*args)
-    __swig_destroy__ = _wrapper.delete_VectorStr
+    def push_back(*args): return _orngTextWrapper.VectorStr_push_back(*args)
+    def front(*args): return _orngTextWrapper.VectorStr_front(*args)
+    def back(*args): return _orngTextWrapper.VectorStr_back(*args)
+    def assign(*args): return _orngTextWrapper.VectorStr_assign(*args)
+    def resize(*args): return _orngTextWrapper.VectorStr_resize(*args)
+    def insert(*args): return _orngTextWrapper.VectorStr_insert(*args)
+    def reserve(*args): return _orngTextWrapper.VectorStr_reserve(*args)
+    def capacity(*args): return _orngTextWrapper.VectorStr_capacity(*args)
+    __swig_destroy__ = _orngTextWrapper.delete_VectorStr
     __del__ = lambda self : None;
-VectorStr_swigregister = _wrapper.VectorStr_swigregister
+VectorStr_swigregister = _orngTextWrapper.VectorStr_swigregister
 VectorStr_swigregister(VectorStr)
 
 class baseLemmatizer(_object):
@@ -133,11 +133,11 @@ class baseLemmatizer(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, baseLemmatizer, name)
     def __init__(self): raise AttributeError, "No constructor defined"
     __repr__ = _swig_repr
-    __swig_destroy__ = _wrapper.delete_baseLemmatizer
+    __swig_destroy__ = _orngTextWrapper.delete_baseLemmatizer
     __del__ = lambda self : None;
-    def getLemma(*args): return _wrapper.baseLemmatizer_getLemma(*args)
-    def lemmatizeText(*args): return _wrapper.baseLemmatizer_lemmatizeText(*args)
-baseLemmatizer_swigregister = _wrapper.baseLemmatizer_swigregister
+    def getLemma(*args): return _orngTextWrapper.baseLemmatizer_getLemma(*args)
+    def lemmatizeText(*args): return _orngTextWrapper.baseLemmatizer_lemmatizeText(*args)
+baseLemmatizer_swigregister = _orngTextWrapper.baseLemmatizer_swigregister
 baseLemmatizer_swigregister(baseLemmatizer)
 
 class lemmatizer(baseLemmatizer):
@@ -149,13 +149,13 @@ class lemmatizer(baseLemmatizer):
     __getattr__ = lambda self, name: _swig_getattr(self, lemmatizer, name)
     __repr__ = _swig_repr
     def __init__(self, *args): 
-        this = _wrapper.new_lemmatizer(*args)
+        this = _orngTextWrapper.new_lemmatizer(*args)
         try: self.this.append(this)
         except: self.this = this
-    __swig_destroy__ = _wrapper.delete_lemmatizer
+    __swig_destroy__ = _orngTextWrapper.delete_lemmatizer
     __del__ = lambda self : None;
-    def getLemma(*args): return _wrapper.lemmatizer_getLemma(*args)
-lemmatizer_swigregister = _wrapper.lemmatizer_swigregister
+    def getLemma(*args): return _orngTextWrapper.lemmatizer_getLemma(*args)
+lemmatizer_swigregister = _orngTextWrapper.lemmatizer_swigregister
 lemmatizer_swigregister(lemmatizer)
 
 class lemmagen(baseLemmatizer):
@@ -167,13 +167,13 @@ class lemmagen(baseLemmatizer):
     __getattr__ = lambda self, name: _swig_getattr(self, lemmagen, name)
     __repr__ = _swig_repr
     def __init__(self, *args): 
-        this = _wrapper.new_lemmagen(*args)
+        this = _orngTextWrapper.new_lemmagen(*args)
         try: self.this.append(this)
         except: self.this = this
-    __swig_destroy__ = _wrapper.delete_lemmagen
+    __swig_destroy__ = _orngTextWrapper.delete_lemmagen
     __del__ = lambda self : None;
-    def getLemma(*args): return _wrapper.lemmagen_getLemma(*args)
-lemmagen_swigregister = _wrapper.lemmagen_swigregister
+    def getLemma(*args): return _orngTextWrapper.lemmagen_getLemma(*args)
+lemmagen_swigregister = _orngTextWrapper.lemmagen_swigregister
 lemmagen_swigregister(lemmagen)
 
 class porter(baseLemmatizer):
@@ -184,17 +184,17 @@ class porter(baseLemmatizer):
     for _s in [baseLemmatizer]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
     __getattr__ = lambda self, name: _swig_getattr(self, porter, name)
     __repr__ = _swig_repr
-    def getLemma(*args): return _wrapper.porter_getLemma(*args)
+    def getLemma(*args): return _orngTextWrapper.porter_getLemma(*args)
     def __init__(self, *args): 
-        this = _wrapper.new_porter(*args)
+        this = _orngTextWrapper.new_porter(*args)
         try: self.this.append(this)
         except: self.this = this
-    __swig_destroy__ = _wrapper.delete_porter
+    __swig_destroy__ = _orngTextWrapper.delete_porter
     __del__ = lambda self : None;
-porter_swigregister = _wrapper.porter_swigregister
+porter_swigregister = _orngTextWrapper.porter_swigregister
 porter_swigregister(porter)
 
-tokenizeNonWords = _wrapper.tokenizeNonWords
-removeWords = _wrapper.removeWords
+tokenizeNonWords = _orngTextWrapper.tokenizeNonWords
+removeWords = _orngTextWrapper.removeWords
 
 
