@@ -117,7 +117,7 @@ class Preprocess(object):
         self.outputEncoding = outputEncoding
         self.tokenize = boundary_split
         if normType == 'stem' and len(self.langData[language]) == 3:
-            self.lemmatizer, self.stopwords = self.langData[language][1:]
+            self.lemmatizer, self.stopwords = (self.langData[language][2], self.langData[language][1])
         else:
             self.lemmatizer, self.stopwords = self.langData[language][:2]
 
@@ -328,7 +328,7 @@ def loadFromXML(fileName, tags={}, doNotParse=[]):
     data = orange.ExampleTable(dom)
     
     f = open(fileName, "r")
-    t = DocumentSetRetriever(f, tags = tags, doNotParse = doNotParse)   
+    t = DocumentSetRetriever(f, tags = tags, doNotParse = doNotParse)
     
     while 1:
         # load document
@@ -440,7 +440,7 @@ def bagOfWords(exampleTable, preprocessor=None, textAtribute=None, stopwords = N
 ## It could be better to use exsting lib for parsing XML (Beautiful Soup)
 
 class DocumentSetHandler(handler.ContentHandler):            
-    def __init__(self, tags = None, doNotParse = [], additionalTags = []):
+    def __init__(self, tags = None, doNotParse = []):
         self.tagsToHandle = ["content", "category", "document", "categories"]
         # set default XML tags
         self.name2tag = {}
@@ -459,9 +459,7 @@ class DocumentSetHandler(handler.ContentHandler):
                     self.tags[tag] = tags[tag]
                     self.name2tag[tags[tag]] = tag
             
-        for k in additionalTags:
-            if k not in self.tagsToHandle:
-                self.tags[k] = k
+
                 
             
         # for current document being parsed
@@ -528,9 +526,9 @@ class DocumentSetHandler(handler.ContentHandler):
 
 class DocumentSetRetriever:
 
-    def __init__(self, source, tags = None, doNotParse = [], additionalTags = []):
+    def __init__(self, source, tags = None, doNotParse = []):
         self.source = source
-        self.handler = DocumentSetHandler(tags, doNotParse, additionalTags)
+        self.handler = DocumentSetHandler(tags, doNotParse)
         self.parser = make_parser()
         self.parser.reset()
         self.parser.setContentHandler(self.handler)
