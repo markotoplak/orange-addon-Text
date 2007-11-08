@@ -111,7 +111,7 @@ def boundary_split(s, removePunctuation = True):
 
 class Preprocess(object):
 
-    def __init__(self, language=None, inputEncoding='cp1250', outputEncoding='cp1250', normType = 'lemmatize'):
+    def __init__(self, language=None, inputEncoding='utf-8', outputEncoding='utf-8', normType = 'lemmatize'):
         language = language or 'en'
         self.inputEncoding = inputEncoding
         self.outputEncoding = outputEncoding
@@ -189,12 +189,12 @@ class Preprocess(object):
     langData = {
 #            'en' : (lambda x: x, [], lambda x: re.split(r'\b', x, re.DOTALL)),
             'en' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-en.bin')).lemmatizeText,
-                    loadWordSet(os.path.join(__languageDataPath,'en_stopwords.txt')),
+                    loadWordSet(os.path.join(__languageDataPath,'stopwords_en.txt')),
                     orngTextWrapper.porter().lemmatizeText),
             'hr' : (orngTextWrapper.lemmatizer(os.path.join(__languageDataPath,'lem-hr.fsa')).lemmatizeText,
-                    loadWordSet(os.path.join(__languageDataPath,'hr_stopwords.txt'))),
+                    loadWordSet(os.path.join(__languageDataPath,'stopwords_hr.txt'))),
             'fr' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-fr.bin')).lemmatizeText,
-                    loadWordSet(os.path.join(__languageDataPath,'fr_stopwords.txt'))),
+                    loadWordSet(os.path.join(__languageDataPath,'stopwords_fr.txt'))),
             'bg' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-bg.bin')).lemmatizeText, set()),
             'cs' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-cs.bin')).lemmatizeText, set()),
             'et' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-et.bin')).lemmatizeText, set()),

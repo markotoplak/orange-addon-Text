@@ -15,7 +15,8 @@ class OWTextPreprocess(OWWidget):
 
     def __init__(self, parent=None, signalManager=None):
         OWWidget.__init__(self,parent,signalManager,"Preprocess")
-        self.langDict = {0: 'en', 1: 'hr', 2: 'fr'}
+        self.langDict = {0: 'bg', 1: 'cs', 2: 'en', 3: 'es', 4: 'et', 5: 'fr',
+            6: 'ge', 7: 'hr', 8: 'hu', 9: 'it', 10: 'ro', 11: 'sl', 12: 'sr'}
         self.selectedLanguage = 0
         #OWWidget.__init__(self,parent,"Rules")
         self.inputs = [("Example Table", ExampleTable, self.dataset)]
@@ -32,7 +33,10 @@ class OWTextPreprocess(OWWidget):
         OWGUI.checkBox(box, self, "lowerCase", "Convert to lower case")
         OWGUI.checkBox(box, self, "stopWords", "Remove stop words")
         OWGUI.checkBox(box, self, "lematizer", "Lematize")
-        OWGUI.radioButtonsInBox(self.controlArea, self, "selectedLanguage", box = "Language", btnLabels = ["en", "hr", "fr"], addSpace = True)
+        OWGUI.radioButtonsInBox(self.controlArea, self, "selectedLanguage", box = "Language",
+            btnLabels = ["Bulgarian", "Czech", "English", "Spanish",
+            "Estonian", "French", "German", "Croatian", "Hungarian", 
+            "Italian", "Romanian", "Slovenian", "Serbian"], addSpace = True)
 
         box = OWGUI.widgetBox(self.controlArea, "Info", addSpace = True)
         OWGUI.label(box, self, "Number of documents: %(nDocuments)s")
@@ -66,8 +70,7 @@ class OWTextPreprocess(OWWidget):
             newData = orange.ExampleTable(orange.Domain(self.data.domain), self.data)
             preprocess = orngText.Preprocess(language = self.langDict[self.selectedLanguage])
             if self.lowerCase:
-                import string
-                newData = preprocess.doOnExampleTable(newData, self.textAttributePos, string.lower)
+                newData = preprocess.doOnExampleTable(newData, self.textAttributePos, preprocess.lowercase)
             if self.stopWords:
                 newData = preprocess.removeStopwordsFromExampleTable(newData, self.textAttributePos)
             if self.lematizer:
