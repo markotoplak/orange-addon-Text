@@ -1,0 +1,54 @@
+<html>
+<head>
+<title>Letter n-grams</title>
+<link rel=stylesheet href="../../../style.css" type="text/css" media=screen>
+<link rel=stylesheet href="style-print.css" type="text/css" media=print></link>
+</head>
+
+<body>
+
+<h1>Letter n-grams</h1>
+
+<img class="screenshot" src="../icons/LetterNgram.png">
+<p>Construct the letter n-grams representation of documents.</p>
+
+<h2>Channels</h2>
+
+<h3>Inputs</h3>
+
+<DL class=attributes>
+<DT>Examples (ExampleTable)</DT>
+<dd>Attribute-valued data set.</dd>
+</dl>
+
+<h3>Outputs</h3>
+<DL class=attributes>
+<DT>Examples (ExampleTable)</DT>
+<DD>Attribute-valued data set with letter n-grams as metaatributes.</DD>
+
+<h2>Description</h2>
+
+<p>The letter n-grams widget constructs the representation of documents using
+letter n-grams. Letter n-grams are sequences of n consecutive letters that appear
+in the text. Same as in the bag of words widget, text features (in this case letter
+n-grams) are added as metaatributes to documents. The value corresponding to a
+metaatribute is the frequency of that metaatribute (letter n-gram) in the
+particular document. In the Ngram size box it is possible to choose the number
+of consecutive letters that are taken as features. It is possible to choose letter
+n-grams of two, three, or four letters. The number of different letter n-grams in
+the entire collection is shown on the bottom of the widget.</p>
+
+<a href="LetterNgram.png"><img class="schema" src="LetterNgram.png" alt="Letter n-grams widget"></a>
+
+<h2>Examples</h2>
+
+<p>Below is a simple example how to use this widget. The input is fed
+directly from the <a href="TextFile.htm">Text file</a> widget, and the output
+is sent to the <a href="TextFeatureSelection.htm">Feature selection</a> widget.</p>
+
+<a href="LetterNgram-Example.png"><img src="LetterNgram-Example.png" alt="Schema with LetterNgram"
+ class="schema"></a>
+
+</body>
+
+</html>

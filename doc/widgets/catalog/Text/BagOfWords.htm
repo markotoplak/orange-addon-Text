@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>Bag of words</title>
+<link rel=stylesheet href="../../../style.css" type="text/css" media=screen>
+<link rel=stylesheet href="style-print.css" type="text/css" media=print></link>
+</head>
+
+<body>
+
+<h1>Bag of words</h1>
+
+<img class="screenshot" src="../icons/BagOfWords.png">
+<p>Construct the bag-of-words representation of documents.</p>
+
+<h2>Channels</h2>
+
+<h3>Inputs</h3>
+
+<DL class=attributes>
+<DT>Examples (ExampleTable)</DT>
+<dd>Attribute-valued data set.</dd>
+</dl>
+
+<h3>Outputs</h3>
+<DL class=attributes>
+<DT>Examples (ExampleTable)</DT>
+<DD>Attribute-valued data set with words as metaatributes.</DD>
+
+<h2>Description</h2>
+
+<p>The bag of words widget is used to construct the bag-of-words representation
+of documents. It does so by adding words as metaatributes to each document. The
+values corresponding to words are chosen in the TFIDF box. If None is selected,
+then the value corresponding to a metaatribute is the frequency of that metaatribute (word)
+in the particular document. If log(1/f) is chosen, then the value corresponding
+to a metaatribute is the TFIDF value of that metaatribute (word) in the particular
+document. The normalization box gives the possibility to normalize the lengths of
+documents in the collection. If None is chosen, no normalization is used. Option
+L1 normalizes the lengths of documents using the Manhattan norm, whereas L2 option
+normalizes lengths using Euclidean norm. Info box displays the number of documents
+in the collection and the name of the text attribute.</p>
+
+<a href="BagOfWords.png"><img class="schema" src="BagOfWords.png" alt="Bag of words widget"></a>
+
+<h2>Examples</h2>
+
+<p>Below is a simple example how to use this widget. The input is fed
+from the <a href="Preprocess.htm">Preprocess</a> widget, and the output
+is sent to the <a href="TextFeatureSelection.htm">Feature selection</a> widget.</p>
+
+<a href="BagOfWords-Example.png"><img src="BagOfWords-Example.png" alt="Schema with BagOfWords"
+ class="schema"></a>
+
+</body>
+
+</html>
+
+

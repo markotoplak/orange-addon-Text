@@ -149,7 +149,7 @@ class OWTextFeatureSelection(OWWidget):
         avg = sum / len(words)
         if min == ():
             min = 0
-        self.lblFeatNo.setText("No. of features: %d, %d" % (len(words), len(self.data.domain.getmetas())))
+        self.lblFeatNo.setText("No. of features: %d" % len(words))
         self.lblMin.setText("Min: %d  Min word = %s" % (min, minword))
         self.lblMax.setText("Max: %d  Max word = %s" % (max,maxword))
         self.lblAvg.setText("Avg: %.3f" % avg)

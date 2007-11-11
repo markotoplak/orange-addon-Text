@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>Text file</title>
+<link rel=stylesheet href="../../../style.css" type="text/css" media=screen>
+<link rel=stylesheet href="style-print.css" type="text/css" media=print></link>
+</head>
+
+<body>
+
+<h1>TextFile</h1>
+
+<img class="screenshot" src="../icons/TextFile.png">
+<p>Reads textual data from a file.</p>
+
+<h2>Channels</h2>
+
+<h3>Inputs</h3>
+
+<DL class=attributes>
+<DT>(None)</DT>
+</dl>
+
+<h3>Outputs</h3>
+
+<DL class=attributes>
+<DT>Examples (ExampleTable)</DT>
+
+<DD>Attribute-valued text data set read from the input file.</DD>
+</dl>
+
+<h2>Description</h2>
+
+<p>This is the widget you will probably use most often when performing text mining. It reads the
+input data file (which can be in XML or SGM format) and sends the token with
+the data set to the output channel. It maintains a list of most
+recently used data files. To open a new data file, "..." button opens
+a standard file dialog. To reread the file, just choose it again from
+the pulldown menu.</p>
+
+<a href="TextFile.png"><img class="schema" src="TextFile.png" alt="Text file widget"></a>
+
+<h2>Examples</h2>
+
+<p>Any of your schemas for text mining should probably start with the TextFile widget. In
+the schema below, the widget is used to read the data that is then
+sent to the <a href="Preprocess.htm">Preprocess</a> widget.</p>
+
+<a href="TextFile-Example.png"><img class="schema"
+src="TextFile-Example.png" alt="Schema with TextFile widget"></a>
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+

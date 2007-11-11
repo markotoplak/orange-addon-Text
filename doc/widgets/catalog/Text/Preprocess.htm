@@ -1,0 +1,67 @@
+<html>
+<head>
+<title>Preprocess</title>
+<link rel=stylesheet href="../../../style.css" type="text/css" media=screen>
+<link rel=stylesheet href="style-print.css" type="text/css" media=print></link>
+</head>
+
+<body>
+
+<h1>Preprocess</h1>
+
+<img class="screenshot" src="../icons/TextPreprocess.png">
+<p>Preprocess the text, according to the language in which it is written.</p>
+
+<h2>Channels</h2>
+
+<h3>Inputs</h3>
+
+<DL class=attributes>
+<DT>Examples (ExampleTable)</DT>
+<dd>Attribute-valued data set.</dd>
+</dl>
+
+<h3>Outputs</h3>
+<DL class=attributes>
+<DT>Examples (ExampleTable)</DT>
+<DD>Attribute-valued data set with the text attribute preprocessed according to
+the selected options.</DD>
+
+<h2>Description</h2>
+
+<p>Preprocess widget is used to lemmatize, convert to lower case, and remove stop words
+from texts in a number of languages. Any of these options can be turned on or off
+in the Options box. The language box is used to choose the language in which the
+text is written. Lemmatization and the list of stop words depend on the choice
+of the language. Info box displays the number of documents in the collection and
+the name of the text attribute.</p>
+
+<a href="Preprocess.png"><img class="schema" src="Preprocess.png" alt="Preprocess widget"></a>
+
+<h2>Examples</h2>
+
+<p>Below is a simple example how to use this widget. The input is fed
+directly from the <a href="TextFile.htm">Text File</a> widget, and the output
+to the <a href="BagOfWords.htm">Bag of Words</a> widget.</p>
+
+<a href="Preprocess-Example.png"><img src="Preprocess-Example.png" alt="Schema with Preprocess"
+ class="schema"></a>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

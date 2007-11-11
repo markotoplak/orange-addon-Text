@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>Text distance</title>
+<link rel=stylesheet href="../../../style.css" type="text/css" media=screen>
+<link rel=stylesheet href="style-print.css" type="text/css" media=print></link>
+</head>
+
+<body>
+
+<h1>Text distance</h1>
+
+<img class="screenshot" src="../icons/TextDistance.png">
+<p>Compute distances between documents.</p>
+
+<h2>Channels</h2>
+
+<h3>Inputs</h3>
+
+<DL class=attributes>
+<DT>Examples (ExampleTable)</DT>
+<dd>Attribute-valued data set.</dd>
+</dl>
+
+<h3>Outputs</h3>
+<DL class=attributes>
+<DT>Distance matrix (SymMatrix)</DT>
+<DD>Matrix where rows and columns are documents and values are distances between them.</DD>
+
+<h2>Description</h2>
+
+<p>This is a simple widget that takes an ExampleTable with text features as metaatributes
+and computes the distances between documents based on those features. The Matrix
+type box is used to specify the output matrix type. If Similarity matrix is chosen,
+a larger value in the matrix means that two documents are more similar, whereas
+choosing the Distance matrix option means that a larger value will indicate greater
+distance between two documents.</p>
+
+<a href="TextDistance.png"><img class="schema" src="TextDistance.png" alt="Text distance widget"></a>
+
+<h2>Examples</h2>
+
+<p>Below is a simple example how to use this widget. The input is fed
+from the <a href="BagOfWords.htm">Bag of words</a> widget, and the output
+to the Hierarhical Clustering widget.</p>
+
+<a href="TextDistance-Example.png"><img class="schema"
+src="TextDistance-Example.png" alt="Schema with TextDistance widget"></a>
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+

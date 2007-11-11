@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>Text feature selection</title>
+<link rel=stylesheet href="../../../style.css" type="text/css" media=screen>
+<link rel=stylesheet href="style-print.css" type="text/css" media=print></link>
+</head>
+
+<body>
+
+<h1>Text feature selection</h1>
+
+<img class="screenshot" src="../icons/TextFeatureSelection.png">
+<p>Selection of textual features.</p>
+
+<h2>Channels</h2>
+
+<h3>Inputs</h3>
+
+<DL class=attributes>
+<DT>Examples (ExampleTable)</DT>
+<dd>Attribute-valued data set with text features as metaatributes.</dd>
+</dl>
+
+<h3>Outputs</h3>
+<DL class=attributes>
+<DT>Examples (ExampleTable)</DT>
+<DD>Attribute-valued data set with the selected text features as metaatributes.</DD>
+
+<h2>Description</h2>
+
+<p>This widget is used to select a subset of textual features which will be
+used in further analysis. It is also used for selection of documents. Feature selection
+can be performed using three measures: term frequency, random, and term document
+frequency. Term frequency measure selects terms based on their frequency in the
+document collection, random measure randomly selects terms, whereas the term document
+frequency measure selects terms based on the number of documents they appear in.
+Document selection measures are word frequency and number of features. Word frequency
+measure selects documents based on the number of words in the document, whereas
+number of features measure discriminates based on the number of different features
+in the document. The mentioned measures can be chosen in the Select measure box.
+The Select operator box is used to specify whether features/documents with the
+score above or below the number set in the threshold box are eliminated. If the
+percentage checkbox is selected, then the number in the threshold box is treated
+as the percent of features/documents that have to be removed. For example,
+if we select TF (term frequency) measure, MAX operator, a threshold of 10, and
+leave the percentage box ticked, we will remove 10% of features that appear most
+frequently in the collection. Selecting, for example, WF (word frequency) measure,
+MIN operator, a threshold of 3, while unselecting percentage checkbox will remove
+those documents that have less than three words. Statistics for features box shows
+some basic statistics about features, whereas the Statistics for documents box
+shows similar information, only for documents.</p>
+
+<a href="TextFeatureSelection.png"><img class="schema" src="TextFeatureSelection.png" alt="Text feature selection widget"></a>
+
+<h2>Examples</h2>
+
+<p>Below is a simple example how to use this widget. The input is fed
+directly from the <a href="BagOfWords.htm">Bag of words</a> widget, and the output
+is sent to the Correspondence analysis widget for visualization.</p>
+
+<a href="TextFeatureSelection-Example.png"><img src="TextFeatureSelection-Example.png" alt="Schema with TextFeatureSelection"
+ class="schema"></a>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

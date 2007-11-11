@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>Word n-grams</title>
+<link rel=stylesheet href="../../../style.css" type="text/css" media=screen>
+<link rel=stylesheet href="style-print.css" type="text/css" media=print></link>
+</head>
+
+<body>
+
+<h1>Word n-grams</h1>
+
+<img class="screenshot" src="../icons/WordNgram.png">
+<p>Construct the word n-grams representation of documents.</p>
+
+<h2>Channels</h2>
+
+<h3>Inputs</h3>
+
+<DL class=attributes>
+<DT>Examples (ExampleTable)</DT>
+<dd>Attribute-valued data set.</dd>
+</dl>
+
+<h3>Outputs</h3>
+<DL class=attributes>
+<DT>Examples (ExampleTable)</DT>
+<DD>Attribute-valued data set with word n-grams as metaatributes.</DD>
+
+<h2>Description</h2>
+
+<p>The word n-grams widget constructs the representation of documents using
+word n-grams. Word n-grams are sequences of n consecutive words that appear
+in the text, uninterrputed by punctuation. Same as in the bag of words widget,
+text features (in this case word n-grams) are added as metaatributes to documents.
+The value corresponding to a metaatribute is the frequency of that metaatribute
+(word n-gram) in the particular document. The No. of words box lets you choose
+how many consecutive words make a word n-gram. It is possible to choose word
+n-grams of two, three, or four letters. The last option in the box, Named entities,
+adds named entities as features for documents. Named entities can have any length
+and are extracted based on capitalization of words. The association measure box
+is used to choose according to which association measure are the word n-grams extracted.
+For named entities, it is not possible to choose an association measure because
+of the way they are extracted.
+Threshold box is used to input the minimal score a word n-gram has to receive,
+according to the chosen association measure, to be kept as a feature. The Stopwords
+File box is used to input the list of stop words for the language in which the text
+is written. Note that stop words should not be removed using the Preprocess widget
+if word n-grams are meant to be used as features. The number of different word n-grams in
+the entire collection is shown on the bottom of the widget.</p>
+
+<a href="WordNgram.png"><img class="schema" src="WordNgram.png" alt="Word n-grams widget"></a>
+
+<h2>Examples</h2>
+
+<p>Below is a simple example how to use this widget. The input is fed
+from the <a href="Preprocess.htm">Preprocess</a> widget, and the output
+is sent to the <a href="TextFeatureSelection.htm">Feature selection</a> widget.</p>
+
+<a href="WordNgram-Example.png"><img src="WordNgram-Example.png" alt="Schema with WordNgram"
+ class="schema"></a>
+
+</body>
+
+</html>

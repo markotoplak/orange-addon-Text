@@ -15,9 +15,12 @@ class OWTextDistance(OWWidget):
         self.inputs = [("Example Table", ExampleTable, self.dataset)]
         self.outputs = [("Distance Matrix", orange.SymMatrix)]
         self.data = None
+        self.distanceType = 0
         self.loadSettings()
+        OWGUI.radioButtonsInBox(self.controlArea, self, "distanceType", box = "Matrix type",
+            btnLabels = ["Similarity matrix", "Distance matrix"], addSpace = True)
         OWGUI.button(self.controlArea, self, "Apply", self.apply)
-        self.adjustSize()        
+        self.adjustSize()
 
     def dataset(self, data):
         self.data = data
@@ -25,7 +28,7 @@ class OWTextDistance(OWWidget):
 
     def apply(self):
         if self.data:
-            dist = orngText.cos(self.data)
+            dist = orngText.cos(self.data, self.distanceType)
             dist.setattr("items", self.data)
             self.send("Distance Matrix", dist)
         else:
