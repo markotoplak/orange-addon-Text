@@ -147,7 +147,9 @@ class Preprocess(object):
     def lowercase(self, text):
         """Converts the word to lowercase."""
 
-        text = text.decode(self.inputEncoding)
+#        import string
+#        return string.lower(text)
+        text = text.decode(self.inputEncoding, "ignore")
         return text.lower().encode(self.inputEncoding)
     
 ##        try:
