@@ -62,6 +62,10 @@ class OWTextPreprocess(OWWidget):
                 self.textAttribute = "-"
                 self.nDocuments = "-"
                 self.data = None
+        else:
+            self.textAttribute = "-"
+            self.nDocuments = "-"
+            self.data = None
 
         self.apply()
 

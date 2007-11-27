@@ -30,7 +30,12 @@ class OWLetterNgram(OWWidget):
             self.tmpData = orange.ExampleTable(data)
             self.tmpDom = orange.Domain(data.domain)            
             #self.data.domain = orange.Domain(data.domain)
-            self.apply()
+        else:
+            self.data = None
+            self.tmpData = None
+            self.lblFeatureNo.setText("\nNo. of features: \n0")
+
+        self.apply()
 
     def apply(self):
         if self.data:

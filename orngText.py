@@ -166,9 +166,8 @@ class Preprocess(object):
     def removeStopwords(self, text):
         if isinstance(text, types.StringTypes):
             tokens = self.tokenize(text)
-            for token in tokens:
-                if self.lowercase(token) in self.stopwords:
-                    text.replace(token, '')
+            tokens = [token for token in tokens if self.lowercase(token) not in self.stopwords]
+            text = ' '.join(tokens)
             return text
             #return self._utf2out(tmt.removeWords(self._in2utf(text), list(self.stopwords)))
         elif isinstance(text, types.ListType):

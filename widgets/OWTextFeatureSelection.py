@@ -86,6 +86,15 @@ class OWTextFeatureSelection(OWWidget):
             self.computeStatistics()
         else:
             self.data = None
+            self.tmpData = None
+            self.lblDocNo.setText("No. of documents: 0")
+            self.lblDocAvg.setText("Avg: 0")
+            self.lblDocMax.setText("Max: 0")
+            self.lblDocMin.setText("Min: 0")
+            self.lblFeatNo.setText("No. of features: 0")
+            self.lblMin.setText("Min: 0  Min word = 0")
+            self.lblMax.setText("Max: 0  Max word = 0")
+            self.lblAvg.setText("Avg: 0.0")
             
     def reset(self):
         self.selections = []

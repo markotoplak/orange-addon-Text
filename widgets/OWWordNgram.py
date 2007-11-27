@@ -101,6 +101,9 @@ class OWWordNgram(OWWidget):
             
             self.data.domain = orange.Domain(data.domain)
             #self.apply()
+        else:
+            self.data = None
+            self.tmpData = None
 
     def apply(self):
         if self.data:
