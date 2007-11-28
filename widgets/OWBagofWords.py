@@ -59,14 +59,21 @@ class OWBagofWords(OWWidget):
         self.apply()
 
     def apply(self):
-        self.send("Example Table", None)        
+        self.send("Example Table", None)
         if self.data:
-            newdata = orngText.bagOfWords(self.data)
+            it = len(self.data)
             if self.norm:
-                newdata = orngText.Preprocessor_norm()(newdata, self.norm)
+                it += len(self.data)
+            if self.TFIDF:
+                it += len(self.data)
+            pb = OWGUI.ProgressBar(self, iterations=it)
+            newdata = orngText.bagOfWords(self.data, callback=pb.advance)
+            if self.norm:
+                newdata = orngText.Preprocessor_norm()(newdata, self.norm, callback=pb.advance)
             if self.TFIDF:
                 newdata = orngText.PreprocessorConstructor_tfidf()(newdata)(newdata)
             self.send("Example Table", newdata)
+            pb.finish()
         else:
             self.send("Example Table", None)
 

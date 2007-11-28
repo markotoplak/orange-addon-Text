@@ -39,10 +39,12 @@ class OWLetterNgram(OWWidget):
 
     def apply(self):
         if self.data:
+            pb = OWGUI.ProgressBar(self, iterations=len(self.data))
             self.data = orange.ExampleTable(orange.Domain(self.tmpDom), self.tmpData)
-            newdata = orngText.extractLetterNGram(self.data, self.size + 2)
+            newdata = orngText.extractLetterNGram(self.data, self.size + 2, callback=pb.advance)
             self.lblFeatureNo.setText("\nNo. of features: \n%d" % len(newdata.domain.getmetas()))
             self.send("Example Table", newdata)
+            pb.finish()
         else:
             self.send("Example Table", None)
 

@@ -71,14 +71,17 @@ class OWTextPreprocess(OWWidget):
 
     def apply(self):
         if self.data:
+            it = len(self.data) * (0 + self.lowerCase + self.stopWords + self.lematizer)
+            pb = OWGUI.ProgressBar(self, iterations=it)
             newData = orange.ExampleTable(orange.Domain(self.data.domain), self.data)
             preprocess = orngText.Preprocess(language = self.langDict[self.selectedLanguage])
             if self.lowerCase:
-                newData = preprocess.doOnExampleTable(newData, self.textAttributePos, preprocess.lowercase)
+                newData = preprocess.doOnExampleTable(newData, self.textAttributePos, preprocess.lowercase, callback=pb.advance)
             if self.stopWords:
-                newData = preprocess.removeStopwordsFromExampleTable(newData, self.textAttributePos)
+                newData = preprocess.removeStopwordsFromExampleTable(newData, self.textAttributePos, callback=pb.advance)
             if self.lematizer:
-                newData = preprocess.lemmatizeExampleTable(newData, self.textAttributePos)
+                newData = preprocess.lemmatizeExampleTable(newData, self.textAttributePos, callback=pb.advance)
+            pb.finish()
         else:
             newData = None
         self.send("Example Table", newData)

@@ -127,14 +127,16 @@ class Preprocess(object):
     def _utf2out(self, s):
        return s.decode('utf-8', 'ignore').encode(self.outputEncoding, 'ignore')
         
-    def doOnExampleTable(self, data, textAttributePos, meth):
+    def doOnExampleTable(self, data, textAttributePos, meth, callback = None):
         newData = orange.ExampleTable(data)
         for ex in newData:
             ex[textAttributePos] = meth(ex[textAttributePos].value)
+            if callback:
+                callback()
         return newData
         
-    def lemmatizeExampleTable(self, data, textAttributePos):
-        return self.doOnExampleTable(data, textAttributePos, self.lemmatize)
+    def lemmatizeExampleTable(self, data, textAttributePos, callback = None):
+        return self.doOnExampleTable(data, textAttributePos, self.lemmatize, callback)
         
     def lemmatize(self, token):
         if isinstance(token, types.StringTypes):
@@ -160,8 +162,8 @@ class Preprocess(object):
 ##            # list
 ##            return [self._utf2out(self.lemmatizer(t)) for t in token]
 
-    def removeStopwordsFromExampleTable(self, data, textAttributePos):
-        return self.doOnExampleTable(data, textAttributePos, self.removeStopwords)
+    def removeStopwordsFromExampleTable(self, data, textAttributePos, callback = None):
+        return self.doOnExampleTable(data, textAttributePos, self.removeStopwords, callback)
     
     def removeStopwords(self, text):
         if isinstance(text, types.StringTypes):
@@ -380,7 +382,7 @@ def loadFromListWithCategories(fileName):
     return data
 
 
-def bagOfWords(exampleTable, preprocessor=None, textAtribute=None, stopwords = None):
+def bagOfWords(exampleTable, preprocessor=None, textAtribute=None, stopwords = None, callback = None):
     """
         by default, text attribute is the last string attribute in the list of attributes ----> no default, or text default (reason, all attributes are String)
     """
@@ -418,6 +420,8 @@ def bagOfWords(exampleTable, preprocessor=None, textAtribute=None, stopwords = N
               id = orange.newmetaid()
               allWords[k] = id
            ex[id] = wordList[k]
+        if callback:
+            callback()
 
     data.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in allWords.items()]), True)
 
@@ -564,7 +568,7 @@ def loadExampleTable(fileName):
    return table
 
 class Preprocessor_norm:
-   def __call__(self, data, LNorm = 2):
+   def __call__(self, data, LNorm = 2, callback = None):
       """Normalizes the ExampleTable table using the given L-Norm. The default norm is L2."""
       from math import sqrt
       newtable = orange.ExampleTable(data)
@@ -577,6 +581,7 @@ class Preprocessor_norm:
             sum = sqrt(sum)
             for word in example.getmetas().keys():
                example[word] = example[word] / sum
+            if callback: callback()
          return newtable
       elif LNorm == 1:
          for example in newtable:
@@ -586,6 +591,7 @@ class Preprocessor_norm:
                sum += v
             for word in example.getmetas().keys():
                example[word] = example[word] / sum
+            if callback: callback()
          return newtable      
       elif LNorm > 2:
          from math import pow
@@ -597,6 +603,7 @@ class Preprocessor_norm:
             sum = pow(sum, 1 / LNorm)
             for word in example.getmetas().keys():
                example[word] = example[word] / sum
+            if callback: callback()
          return newtable
       elif LNorm == 0:
          for example in newtable:
@@ -607,8 +614,9 @@ class Preprocessor_norm:
                      sum = v
             for word in example.getmetas().keys():
                example[word] = example[word] / sum
+            if callback: callback()
          return newtable
-      return data
+      #return data
       
 import math
 
@@ -616,12 +624,13 @@ class Preprocessor_tfidf:
     def __init__(self, termNormalizers):
         self.termNormalizers = termNormalizers
 
-    def __call__(self, data):
+    def __call__(self, data, callback = None):
         if type(data) == orange.ExampleTable:
             newData = orange.ExampleTable(data)
             for ex in newData:
                 for id, val in ex.getmetas().items():
                     ex[id] *= self.termNormalizers.get(id, 0)
+                if callback: callback()
             return newData
         else:
             ex = orange.Example(data)
@@ -643,7 +652,7 @@ class PreprocessorConstructor_tfidf:
 
 
 
-def cos(data, normalize = False, distance = 0):
+def cos(data, normalize = False, distance = 0, callback = None):
     import numpy
     from math import sqrt
     from time import time
@@ -673,6 +682,7 @@ def cos(data, normalize = False, distance = 0):
                     c[i, j] = 10000000
             if normalize and c[i, j]:
                 c[i, j] /= sqrt(sum([k**2 for k in metas[j].values()]) * sum([p**2 for p in metas[i].values()]))
+            if callback: callback()
         
     print "Total time for cos was %s seconds" % str(time() - time1)
     return c
@@ -889,7 +899,7 @@ def DSS(table, funcName, operator, threshold):
 
    
 
-def extractLetterNGram(table, n=2):
+def extractLetterNGram(table, n=2, callback = None):
    """Builds the letter ngram features.
     n is the window size (size of ngrams).
    """
@@ -916,6 +926,7 @@ def extractLetterNGram(table, n=2):
             id = orange.newmetaid()
             allngrams[k] = id
          ex[id] = ngrams[k]
+      if callback: callback()
 
    newTable.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in allngrams.items()]), True)
    #table.domain = orange.Domain(domaincopy)
@@ -1465,7 +1476,7 @@ def extractNames(text):
    return [w.rstrip(',\'" ') for w in names]
 
 
-def extractNamedEntities(table, preprocessor = None, stopwords = None):
+def extractNamedEntities(table, preprocessor = None, stopwords = None, callback = None):
    """Adds named entities to an ExampleTable in a similar way bagOfWords adds
     words."""
     
