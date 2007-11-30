@@ -54,7 +54,6 @@ class OWTextFeatureSelection(OWWidget):
 
         self.applyButton = OWGUI.button(optionBox, self, "Apply", self.apply)
         self.applyButton.setDisabled(1)
-        OWGUI.button(optionBox, self, "Reset", self.reset)
         OWGUI.checkBox(optionBox, self, "perc", "percentage", callback = self.selectionChanged)
         #OWGUI.spin(optionBox, self, "threshold", 0, 10000, label="Threshold:", callback = None)
         OWGUI.lineEdit(optionBox, self, "threshold", orientation="horizontal", valueType=float, box="Threshold", callback = self.selectionChanged)
@@ -96,12 +95,6 @@ class OWTextFeatureSelection(OWWidget):
             self.lblMax.setText("Max: 0  Max word = 0")
             self.lblAvg.setText("Avg: 0.0")
             self.applyButton.setDisabled(1)
-
-    def reset(self):
-        self.selections = []
-        self.data = orange.ExampleTable(orange.Domain(self.tmpDom), self.tmpData)
-        self.send("Example Table", self.data)
-        self.computeStatistics()
 
     def computeStatistics(self):
         docNo = len(self.data)
