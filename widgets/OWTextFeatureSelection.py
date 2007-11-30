@@ -34,8 +34,8 @@ class OWTextFeatureSelection(OWWidget):
         #gl=QGridLayout(ca)
         selectionbox = OWGUI.QHGroupBox('Feature selection', self.controlArea)
 
-        OWGUI.listBox(selectionbox, self, 'chosenMeasure', 'measures', box = 'Select measure', callback = None)
-        OWGUI.listBox(selectionbox, self, 'chosenOp', 'operators', box = 'Select operator', callback = None)
+        OWGUI.listBox(selectionbox, self, 'chosenMeasure', 'measures', box = 'Select measure', callback = self.selectionChanged)
+        OWGUI.listBox(selectionbox, self, 'chosenOp', 'operators', box = 'Select operator', callback = self.selectionChanged)
 
         boxAttrStat = QVGroupBox("Statistics for features", self.controlArea)
         self.lblFeatNo = QLabel("No. of features: ", boxAttrStat)
@@ -53,9 +53,9 @@ class OWTextFeatureSelection(OWWidget):
 
         self.applyButton = OWGUI.button(optionBox, self, "Apply", self.apply)
         OWGUI.button(optionBox, self, "Reset", self.reset)
-        OWGUI.checkBox(optionBox, self, "perc", "percentage")
+        OWGUI.checkBox(optionBox, self, "perc", "percentage", callback = self.selectionChanged)
         #OWGUI.spin(optionBox, self, "threshold", 0, 10000, label="Threshold:", callback = None)
-        OWGUI.lineEdit(optionBox, self, "threshold", orientation="horizontal", valueType=float, box="Threshold")
+        OWGUI.lineEdit(optionBox, self, "threshold", orientation="horizontal", valueType=float, box="Threshold", callback = self.selectionChanged)
         
         legendBox = QVGroupBox("Legend", self.controlArea)
         OWGUI.label(legendBox, self, "TF = Term frequency -> the number of times a feature appears in the corpus")
@@ -76,6 +76,7 @@ class OWTextFeatureSelection(OWWidget):
         self.data.selection = deepcopy(self.selections)
         self.send("Example Table", self.data)
         self.computeStatistics()
+        self.applyButton.setDisabled(1)
 
     def dataset(self, data):
         if data:
@@ -97,7 +98,8 @@ class OWTextFeatureSelection(OWWidget):
             self.lblMin.setText("Min: 0  Min word = 0")
             self.lblMax.setText("Max: 0  Max word = 0")
             self.lblAvg.setText("Avg: 0.0")
-            
+            self.applyButton.setDisabled(1)
+
     def reset(self):
         self.selections = []
         self.data = orange.ExampleTable(orange.Domain(self.tmpDom), self.tmpData)
@@ -164,6 +166,9 @@ class OWTextFeatureSelection(OWWidget):
         self.lblMax.setText("Max: %d  Max word = %s" % (max,maxword))
         self.lblAvg.setText("Avg: %.3f" % avg)
 
+    def selectionChanged(self):
+        if self.data:
+            self.applyButton.setDisabled(0)
 
 
 if __name__ == "__main__":
