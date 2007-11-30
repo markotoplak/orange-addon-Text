@@ -26,7 +26,7 @@ class OWTextPreprocess(OWWidget):
         self.textAttribute = "-"
         self.nDocuments = "-"
         self.data = None
-        
+
         self.loadSettings()
 
         box = OWGUI.widgetBox(self.controlArea, "Options", addSpace = True)

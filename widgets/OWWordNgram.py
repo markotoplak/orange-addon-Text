@@ -112,7 +112,7 @@ class OWWordNgram(OWWidget):
                 newdata = orngText.extractNamedEntities(self.data, stopwords = self.stopwords)
             else:
                 newdata = orngText.extractWordNGram(self.data, n = self.size + 2, stopwords = self.stopwords, threshold = self.threshold, measure = self.measureDict[self.measure])
-            self.lblFeatureNo.setText("\nNo. of features: \n%d" % len(newdata.domain.getmetas()))
+            self.lblFeatureNo.setText("\nNo. of features: \n%d" % len(newdata.domain.getmetas(orngText.TEXTMETAID)))
             self.send("Example Table", newdata)
         else:
             self.send("Example Table", None)

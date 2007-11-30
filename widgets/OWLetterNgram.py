@@ -10,6 +10,7 @@ from OWWidget import *
 import OWGUI, orngText
 
 class OWLetterNgram(OWWidget):
+    settingsList = ["size"]
 
     def __init__(self, parent=None, signalManager=None):
         OWWidget.__init__(self,parent,signalManager,"LetterNgram")
@@ -18,6 +19,9 @@ class OWLetterNgram(OWWidget):
 
         self.size = 0
         self.data = None
+        
+        self.loadSettings()
+        
         OWGUI.radioButtonsInBox(self.controlArea, self, "size", box = "Ngram size", btnLabels = ["2", "3", "4"], addSpace = True)
         OWGUI.button(self.controlArea, self, "Apply", self.apply)
         self.lblFeatureNo = QLabel("\nNo. of features: ", self.controlArea)
@@ -42,7 +46,7 @@ class OWLetterNgram(OWWidget):
             pb = OWGUI.ProgressBar(self, iterations=len(self.data))
             self.data = orange.ExampleTable(orange.Domain(self.tmpDom), self.tmpData)
             newdata = orngText.extractLetterNGram(self.data, self.size + 2, callback=pb.advance)
-            self.lblFeatureNo.setText("\nNo. of features: \n%d" % len(newdata.domain.getmetas()))
+            self.lblFeatureNo.setText("\nNo. of features: \n%d" % len(newdata.domain.getmetas(orngText.TEXTMETAID)))
             self.send("Example Table", newdata)
             pb.finish()
         else:

@@ -108,7 +108,7 @@ class OWTextFeatureSelection(OWWidget):
         min = ()
         sum = 0
         for doc in self.data:
-            featNo = len(doc.getmetas())
+            featNo = len(doc.getmetas(orngText.TEXTMETAID))
             sum += featNo
             if featNo > max:
                 max = featNo
@@ -124,7 +124,7 @@ class OWTextFeatureSelection(OWWidget):
         #compute feature statistics
         words = {}
         sum = 0
-        if not self.data.domain.getmetas() or not self.data:
+        if not self.data.domain.getmetas(orngText.TEXTMETAID) or not self.data:
           self.lblFeatNo.setText("No. of features: 0")
           self.lblMin.setText("Min: %d  Min word = 0")
           self.lblMax.setText("Max: %d  Max word = 0")
@@ -135,7 +135,7 @@ class OWTextFeatureSelection(OWWidget):
         maxword = minword = ''
         
         for ex in self.data:
-           for v in ex.getmetas().values():
+           for v in ex.getmetas(orngText.TEXTMETAID).values():
               varname = v.variable.name
               if words.has_key(varname):
                  words[varname] += v.value
