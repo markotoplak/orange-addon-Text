@@ -69,9 +69,11 @@ class OWTextFeatureSelection(OWWidget):
 
     def apply(self):
         if self.measures[self.chosenMeasure[0]] == 'WF' or self.measures[self.chosenMeasure[0]] == 'NF':
-            self.data = orngText.DSS(self.data, self.measures[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold)
+            #self.data = orngText.DSS(self.data, self.measures[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold)
+            self.data = orngText.DSS(self.tmpData, self.measures[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold)
         else:
-            self.data = orngText.FSS(self.data, self.measures[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold, self.perc)
+            #self.data = orngText.FSS(self.data, self.measures[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold, self.perc)
+            self.data = orngText.FSS(self.tmpData, self.measures[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold, self.perc)
         self.selections.append(self.measures[self.chosenMeasure[0]] + ' ' + self.operators[self.chosenOp[0]] + ' ' + str(self.threshold) + ' percentage=' + str(self.perc))
         self.data.selection = deepcopy(self.selections)
         self.send("Example Table", self.data)
