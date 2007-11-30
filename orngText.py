@@ -127,8 +127,15 @@ class Preprocess(object):
     def _utf2out(self, s):
        return s.decode('utf-8', 'ignore').encode(self.outputEncoding, 'ignore')
         
-    def doOnExampleTable(self, data, textAttributePos, meth, callback = None):
+    def doOnExampleTable(self, data, textAttributePos = None, meth = None, callback = None):
         newData = orange.ExampleTable(data)
+        if not textAttributePos:
+            #user didn't select text attribute, take the last string attribute by default
+            for i in range(len(data.domain.attributes) - 1, 0, -1):
+                if isinstance(data.domain.attributes[i], orange.StringVariable):
+                    textAttributePos = i
+                    print data.domain, i
+                    break
         for ex in newData:
             ex[textAttributePos] = meth(ex[textAttributePos].value)
             if callback:

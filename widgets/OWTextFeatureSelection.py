@@ -51,7 +51,7 @@ class OWTextFeatureSelection(OWWidget):
 
         optionBox = OWGUI.QVGroupBox('', selectionbox)        
 
-        OWGUI.button(optionBox, self, "Apply", self.apply)
+        self.applyButton = OWGUI.button(optionBox, self, "Apply", self.apply)
         OWGUI.button(optionBox, self, "Reset", self.reset)
         OWGUI.checkBox(optionBox, self, "perc", "percentage")
         #OWGUI.spin(optionBox, self, "threshold", 0, 10000, label="Threshold:", callback = None)
@@ -84,6 +84,8 @@ class OWTextFeatureSelection(OWWidget):
             self.tmpData = orange.ExampleTable(data)
             self.tmpDom = orange.Domain(data.domain)
             self.computeStatistics()
+            self.apply()
+            self.applyButton.setDisabled(1)
         else:
             self.data = None
             self.tmpData = None
@@ -104,7 +106,6 @@ class OWTextFeatureSelection(OWWidget):
 
     def computeStatistics(self):
         docNo = len(self.data)
-        print len(self.data.domain.getmetas())
         if not docNo:
             docNo = 1
         self.lblDocNo.setText("No. of documents: %d" % docNo)
@@ -162,6 +163,7 @@ class OWTextFeatureSelection(OWWidget):
         self.lblMin.setText("Min: %d  Min word = %s" % (min, minword))
         self.lblMax.setText("Max: %d  Max word = %s" % (max,maxword))
         self.lblAvg.setText("Avg: %.3f" % avg)
+
 
 
 if __name__ == "__main__":
