@@ -659,7 +659,7 @@ class PreprocessorConstructor_tfidf:
 
 
 
-def cos(data, normalize = False, distance = 0, callback = None):
+def cos(data, normalize = True, distance = 0, callback = None):
     import numpy
     from math import sqrt
     from time import time
@@ -688,7 +688,7 @@ def cos(data, normalize = False, distance = 0, callback = None):
                 except:
                     c[i, j] = 10000000
             if normalize and c[i, j]:
-                c[i, j] /= sqrt(sum([k**2 for k in metas[j].values()]) * sum([p**2 for p in metas[i].values()]))
+                c[i, j] /= sqrt(sum([k**2 for k in metas[j].values()])) * sqrt(sum([p**2 for p in metas[i].values()]))
             if callback: callback()
         
     print "Total time for cos was %s seconds" % str(time() - time1)
