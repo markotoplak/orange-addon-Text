@@ -54,6 +54,7 @@ class OWTextPreprocess(OWWidget):
 
     def dataset(self, data):
         if data:
+            self.textAttributePos = None
             for i in range(0, len(data.domain.attributes)):
                 if isinstance(data.domain.attributes[i], orange.StringVariable):
                     self.attributesCombo.insertItem(data.domain.attributes[i].name)
@@ -74,6 +75,9 @@ class OWTextPreprocess(OWWidget):
                     self.textAttribute = "-"
                     self.nDocuments = "-"
                     self.data = None
+            else:
+                self.data = data
+                self.nDocuments = len(data)
         else:
             self.textAttribute = "-"
             self.nDocuments = "-"
