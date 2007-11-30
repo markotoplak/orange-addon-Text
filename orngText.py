@@ -77,6 +77,8 @@ import orange
 import orngTextWrapper
 import types
 
+TEXTMETAID = 7
+
 def loadWordSet(f):
     try:
        f = open(f, 'r')
@@ -430,7 +432,7 @@ def bagOfWords(exampleTable, preprocessor=None, textAtribute=None, stopwords = N
         if callback:
             callback()
 
-    data.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in allWords.items()]), True)
+    data.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in allWords.items()]), TEXTMETAID)
 
     #exampleTable.domain = orange.Domain(data.domain.attributes)
     exampleTable.changeDomain(domaincopy)
@@ -582,21 +584,21 @@ class Preprocessor_norm:
       if LNorm == 2:
          for example in newtable:
             sum = 0         
-            for v in example.getmetas().values():
+            for v in example.getmetas(TEXTMETAID).values():
                #val = example[word].value
                sum += v*v
             sum = sqrt(sum)
-            for word in example.getmetas().keys():
+            for word in example.getmetas(TEXTMETAID).keys():
                example[word] = example[word] / sum
             if callback: callback()
          return newtable
       elif LNorm == 1:
          for example in newtable:
             sum = 0         
-            for v in example.getmetas().values():
+            for v in example.getmetas(TEXTMETAID).values():
                #val = example[word].value
                sum += v
-            for word in example.getmetas().keys():
+            for word in example.getmetas(TEXTMETAID).keys():
                example[word] = example[word] / sum
             if callback: callback()
          return newtable      
@@ -604,22 +606,22 @@ class Preprocessor_norm:
          from math import pow
          for example in newtable:
             sum = 0         
-            for v in example.getmetas().values():
+            for v in example.getmetas(TEXTMETAID).values():
                #val = example[word].value
                sum += pow(v, LNorm)
             sum = pow(sum, 1 / LNorm)
-            for word in example.getmetas().keys():
+            for word in example.getmetas(TEXTMETAID).keys():
                example[word] = example[word] / sum
             if callback: callback()
          return newtable
       elif LNorm == 0:
          for example in newtable:
             sum = 0         
-            for v in example.getmetas().values():
+            for v in example.getmetas(TEXTMETAID).values():
                   #val = example[word].value
                   if v > sum:
                      sum = v
-            for word in example.getmetas().keys():
+            for word in example.getmetas(TEXTMETAID).keys():
                example[word] = example[word] / sum
             if callback: callback()
          return newtable
@@ -635,13 +637,13 @@ class Preprocessor_tfidf:
         if type(data) == orange.ExampleTable:
             newData = orange.ExampleTable(data)
             for ex in newData:
-                for id, val in ex.getmetas().items():
+                for id, val in ex.getmetas(TEXTMETAID).items():
                     ex[id] *= self.termNormalizers.get(id, 0)
                 if callback: callback()
             return newData
         else:
             ex = orange.Example(data)
-            for id, val in ex.getmetas().items():
+            for id, val in ex.getmetas(TEXTMETAID).items():
                 ex[id] *= self.termNormalizers.get(id, 0)
             return ex
 
@@ -650,7 +652,7 @@ class PreprocessorConstructor_tfidf:
     def __call__(self, data):
         frequencies = {}
         for ex in data:
-            for id in ex.getmetas():
+            for id in ex.getmetas(TEXTMETAID):
                 frequencies[id] = frequencies.get(id, 0) + 1
 
         N = float(len(data))
@@ -667,19 +669,19 @@ def cos(data, normalize = True, distance = 0, callback = None):
     c = orange.SymMatrix(len(data))
 ##    for i, ex1 in enumerate(data):
 ##        for j in range(i):
-##            ex1metas = ex1.getmetas()
-##            ex2metas = data[j].getmetas()
+##            ex1metas = ex1.getmetas(TEXTMETAID)
+##            ex2metas = data[j].getmetas(TEXTMETAID)
 ##            c[i, j] = sum([v1 * ex2metas.get(id, 0) for id, v1 in ex1metas.items()])
 ##            if normalize and c[i, j]:
 ##                c[i, j] /= sqrt(sum([i**2 for i in ex2metas.values()]) * sum([i**2 for i in ex1metas.values()]))
 
     metas = {}
     for i, ex in enumerate(data):
-        metas[i] = ex.getmetas()
+        metas[i] = ex.getmetas(TEXTMETAID)
     for i, ex1 in enumerate(data):
         for j in range(i):
-            #ex1metas = ex1.getmetas()
-            #ex2metas = data[j].getmetas()
+            #ex1metas = ex1.getmetas(TEXTMETAID)
+            #ex2metas = data[j].getmetas(TEXTMETAID)
             if not distance:
                 c[i, j] = float(sum([v1 * metas[j].get(id, 0) for id, v1 in metas[i].items()]))
             else:
@@ -699,7 +701,7 @@ def FSMRandom(table, perc = True):
    from random import random
    words = {}
    for ex in table:
-      for v in ex.getmetas().values():
+      for v in ex.getmetas(TEXTMETAID).values():
          varname = v.variable.name
          if not words.has_key(varname):
             words[varname] = random()
@@ -713,7 +715,7 @@ def FSMRandom(table, perc = True):
 def FSMTDF(table, perc = True):
    words = {}
    for ex in table:
-      for v in ex.getmetas().values():
+      for v in ex.getmetas(TEXTMETAID).values():
          varname = v.variable.name
          if words.has_key(varname):
             words[varname] += 1.0
@@ -727,10 +729,10 @@ def FSMTDF(table, perc = True):
 
 def FSMTF(table, perc = True):
    words = {}
-   #featureTotal = len(table.domain.getmetas())
+   #featureTotal = len(table.domain.getmetas(TEXTMETAID))
    #featNo = featureTotal * perc / 100
    for ex in table:
-      for v in ex.getmetas().values():
+      for v in ex.getmetas(TEXTMETAID).values():
          varname = v.variable.name
          if words.has_key(varname):
             words[varname] += v.value
@@ -800,7 +802,7 @@ def FSS(table, funcName, operator, threshold, perc = True):
 ##      #[ex.removemeta(k) for ex in newTable if ex.hasmeta(k)]
 ##      remMetas.add(met)
    remMetas = set(removeList)
-   #a = set(table.domain.getmetas())
+   #a = set(table.domain.getmetas(TEXTMETAID))
    a = set([i.name for i in table.domain.getmetas(str).values()])
    metas = a.difference(remMetas)
    #domaincopy = orange.Domain(table.domain.attributes, False) 
@@ -813,7 +815,7 @@ def FSS(table, funcName, operator, threshold, perc = True):
 ##      newex = orange.Example(domaincopy)
 ##      for att in newex.domain:
 ##         newex[att] = ex[att]
-##      for k in ex.getmetas().keys():
+##      for k in ex.getmetas(TEXTMETAID).keys():
 ##         if k in metadict.keys():
 ##            newex[k] = ex[k]
 ##      newTable.append(newex)
@@ -821,7 +823,7 @@ def FSS(table, funcName, operator, threshold, perc = True):
 ##   newTable = orange.ExampleTable(orange.Domain(table.domain.attributes), table)
 ##   newkeys = {}
 ##   for ex in table:
-##      for k in ex.getmetas().keys():
+##      for k in ex.getmetas(TEXTMETAID).keys():
 ##         if k in metadict.keys():
 ##            id = newkeys.get(metadict[k].name, 0)
 ##            if not id:
@@ -835,7 +837,7 @@ def FSS(table, funcName, operator, threshold, perc = True):
    newTable = orange.ExampleTable(orange.Domain(table.domain), table)
    newTable.domain.removemeta(removeList)
    for ex in newTable:
-      for k, v in ex.getmetas().items():
+      for k, v in ex.getmetas(TEXTMETAID).items():
          if not v.variable:
             ex.removemeta(k)
    return newTable
@@ -846,7 +848,7 @@ def DSMNF(table, threshold, max):
     #of different features it has
     removeList = []
     for ex in table:
-        features = len(ex.getmetas())
+        features = len(ex.getmetas(TEXTMETAID))
         if max and features > threshold:
             removeList.append(0)
         elif not max and features < threshold:
@@ -863,7 +865,7 @@ def DSMWF(table, threshold, max):
    removeList = []
    for ex in table:
       words = 0
-      for freq in ex.getmetas().values():
+      for freq in ex.getmetas(TEXTMETAID).values():
          words += freq
       if max and words > threshold:
          removeList.append(0)
@@ -891,12 +893,12 @@ def DSS(table, funcName, operator, threshold):
    newTable = newTable.select(removeList)
    removedMetas = set([])
    for ex in removed:
-        for k in ex.getmetas().keys():
+        for k in ex.getmetas(TEXTMETAID).keys():
             removedMetas.add(k)
         
    
    for ex in newTable:
-        for k, v in ex.getmetas().items():
+        for k, v in ex.getmetas(TEXTMETAID).items():
             if k in removedMetas:
                 removedMetas.remove(k)
 
@@ -935,10 +937,10 @@ def extractLetterNGram(table, n=2, callback = None):
          ex[id] = ngrams[k]
       if callback: callback()
 
-   newTable.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in allngrams.items()]), True)
+   newTable.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in allngrams.items()]), TEXTMETAID)
    #table.domain = orange.Domain(domaincopy)
    table.changeDomain(domaincopy)
-   #table.domain.removemeta(table.domain.getmetas().keys())
+   #table.domain.removemeta(table.domain.getmetas(TEXTMETAID).keys())
    return newTable
 
 
@@ -1075,7 +1077,7 @@ def extractWordNGram(table, preprocessor = None, n = 2, stopwords = None, thresh
                digrams[k] = id
             ex[id] = localdigrams[k]
 
-      newTable.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in digrams.items()]), True)
+      newTable.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in digrams.items()]), TEXTMETAID)
 
 ############################################################################################################
 ##                                        TRIGRAMS                                                        ##
@@ -1239,7 +1241,7 @@ def extractWordNGram(table, preprocessor = None, n = 2, stopwords = None, thresh
                trigrams[k] = id
             ex[id] = localtrigrams[k]
 
-      newTable.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in trigrams.items()]), True)
+      newTable.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in trigrams.items()]), TEXTMETAID)
 
 ############################################################################################################
 ##                                        TETRAGRAMS                                                      ##
@@ -1425,7 +1427,7 @@ def extractWordNGram(table, preprocessor = None, n = 2, stopwords = None, thresh
                tetragrams[k] = id
             ex[id] = localtetragrams[k]
 
-      newTable.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in tetragrams.items()]), True)         
+      newTable.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in tetragrams.items()]), TEXTMETAID)
    else:
       return table
    table.changeDomain(domaincopy)
@@ -1532,10 +1534,10 @@ def extractNamedEntities(table, preprocessor = None, stopwords = None, callback 
             allNames[k] = id
          ex[id] = names[k]
 
-   newTable.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in allNames.items()]), True)
+   newTable.domain.addmetas(dict([(id, orange.FloatVariable(k)) for k, id in allNames.items()]), TEXTMETAID)
    #table.domain = orange.Domain(domaincopy)
    table.changeDomain(domaincopy)
-   #table.domain.removemeta(table.domain.getmetas().keys())
+   #table.domain.removemeta(table.domain.getmetas(TEXTMETAID).keys())
    return newTable
    
 
