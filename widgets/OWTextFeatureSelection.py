@@ -21,8 +21,9 @@ class OWTextFeatureSelection(OWWidget):
         
         self.data = None
         self.chosenMeasure = [0]
-        self.measures = ['TF', 'RAND', 'TDF', 'WF', 'NF']
+        self.measures = ['Term frequency', 'Random', 'Term document frequency', 'Word frequency', 'Number of features']
         self.chosenOp = [0]
+        self.measureDict = {0: 'TF', 1: 'RAND', 2: 'TDF', 3: 'WF', 4: 'NF'}
         self.operators = ['MIN', 'MAX']
         self.tmpData = None
         self.perc = 1
@@ -52,29 +53,23 @@ class OWTextFeatureSelection(OWWidget):
         optionBox = OWGUI.QVGroupBox('', selectionbox)        
 
         self.applyButton = OWGUI.button(optionBox, self, "Apply", self.apply)
+        self.applyButton.setDisabled(1)
         OWGUI.button(optionBox, self, "Reset", self.reset)
         OWGUI.checkBox(optionBox, self, "perc", "percentage", callback = self.selectionChanged)
         #OWGUI.spin(optionBox, self, "threshold", 0, 10000, label="Threshold:", callback = None)
         OWGUI.lineEdit(optionBox, self, "threshold", orientation="horizontal", valueType=float, box="Threshold", callback = self.selectionChanged)
-        
-        legendBox = QVGroupBox("Legend", self.controlArea)
-        OWGUI.label(legendBox, self, "TF = Term frequency -> the number of times a feature appears in the corpus")
-        OWGUI.label(legendBox, self, "RAND = Random -> randomly selects the features to keep")
-        OWGUI.label(legendBox, self, "TDF = Term document frequency -> the number of documents in which a feature appears")
-        OWGUI.label(legendBox, self, "WF = Word frequency -> the total number of words in a document")
-        OWGUI.label(legendBox, self, "NF = Number of features -> the number of different features in a document")
 
         self.controlArea.adjustSize()
 
 
     def apply(self):
-        if self.measures[self.chosenMeasure[0]] == 'WF' or self.measures[self.chosenMeasure[0]] == 'NF':
+        if self.measureDict[self.chosenMeasure[0]] == 'WF' or self.measureDict[self.chosenMeasure[0]] == 'NF':
             #self.data = orngText.DSS(self.data, self.measures[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold)
-            self.data = orngText.DSS(self.tmpData, self.measures[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold)
+            self.data = orngText.DSS(self.tmpData, self.measureDict[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold)
         else:
             #self.data = orngText.FSS(self.data, self.measures[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold, self.perc)
-            self.data = orngText.FSS(self.tmpData, self.measures[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold, self.perc)
-        self.selections.append(self.measures[self.chosenMeasure[0]] + ' ' + self.operators[self.chosenOp[0]] + ' ' + str(self.threshold) + ' percentage=' + str(self.perc))
+            self.data = orngText.FSS(self.tmpData, self.measureDict[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold, self.perc)
+        self.selections.append(self.measureDict[self.chosenMeasure[0]] + ' ' + self.operators[self.chosenOp[0]] + ' ' + str(self.threshold) + ' percentage=' + str(self.perc))
         self.data.selection = deepcopy(self.selections)
         self.send("Example Table", self.data)
         self.computeStatistics()
