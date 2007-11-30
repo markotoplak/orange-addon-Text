@@ -95,6 +95,7 @@ class OWTextFeatureSelection(OWWidget):
             self.lblMax.setText("Max: 0  Max word = 0")
             self.lblAvg.setText("Avg: 0.0")
             self.applyButton.setDisabled(1)
+            self.send("Example Table", None)
 
     def computeStatistics(self):
         docNo = len(self.data)
