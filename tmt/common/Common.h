@@ -56,23 +56,15 @@ public:
 	~StdError() throw();
 };
 
-#if __APPLE__ || __GNUC__ >= 4
-#define TMTDEADFN __dead2
-#elif defined(__GNUC__)
-#define TMTDEADFN __attribute__ ((__noreturn__))
-#else
-#define TMTDEADFN 
-#endif
-
 /// TMT initialization function
 /** Use this function before calling or initializing any other function or class
 	defined in TMT. This function will perform all the necessary initializations.
 */
 void InitTMT();
 /// @cond
-void TMTFatal1(const char *message) TMTDEADFN;
-void TMTFatal2(const char *string1, const char *string2) TMTDEADFN;
-void TMTFatal2(const char *string1, const string &string2) TMTDEADFN;
+void TMTFatal1(const char *message);
+void TMTFatal2(const char *string1, const char *string2);
+void TMTFatal2(const char *string1, const string &string2);
 void TMTLog(const char *string1, const char *format, ...);
 /// @endcond
 
