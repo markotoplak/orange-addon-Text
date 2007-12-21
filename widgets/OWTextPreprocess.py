@@ -27,16 +27,20 @@ class OWTextPreprocess(OWWidget):
         self.nDocuments = "-"
         self.data = None
 
-        self.loadSettings()
+        
 
         box = OWGUI.widgetBox(self.controlArea, "Options", addSpace = True)
         OWGUI.checkBox(box, self, "lowerCase", "Convert to lower case")
         OWGUI.checkBox(box, self, "stopWords", "Remove stop words")
         OWGUI.checkBox(box, self, "lematizer", "Lematize")
-        OWGUI.radioButtonsInBox(self.controlArea, self, "selectedLanguage", box = "Language",
-            btnLabels = ["Bulgarian", "Czech", "English", "Spanish",
-            "Estonian", "French", "German", "Croatian", "Hungarian", 
-            "Italian", "Romanian", "Slovenian", "Serbian"], addSpace = True)
+        
+        btnLabels = ["Bulgarian", "Czech", "English", "Spanish", "Estonian", "French", "German", "Croatian", "Hungarian", "Italian", "Romanian", "Slovenian", "Serbian"]
+        box = OWGUI.widgetBox(self.controlArea, "Language", addSpace = True)
+        self.langCombo = OWGUI.comboBox(box, self, "selectedLanguage")
+        for i in range(0, len(btnLabels)):
+            self.langCombo.insertItem(QPixmap(os.path.dirname(__file__) + "/icons/" + self.langDict[i] +".png"), btnLabels[i])
+        
+        self.loadSettings()
         
         box = OWGUI.widgetBox(self.controlArea, "Text attribute", addSpace = True)
         self.textAttributePos = None
