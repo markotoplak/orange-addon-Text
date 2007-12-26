@@ -21,6 +21,7 @@ class OWBagofWords(OWWidget):
         self.norm = 0
         self.textAttribute = "-"
         self.nDocuments = "-"
+        self.nWords = "-"
         self.data = None
         
         self.loadSettings()
@@ -30,6 +31,7 @@ class OWBagofWords(OWWidget):
 
         box = OWGUI.widgetBox(self.controlArea, "Info", addSpace = True)
         OWGUI.label(box, self, "Number of documents: %(nDocuments)s")
+        OWGUI.label(box, self, "Number of words: %(nWords)s")
         OWGUI.label(box, self, "Text attribute: %(textAttribute)s")
 
         OWGUI.button(self.controlArea, self, "Apply", self.apply)
@@ -50,10 +52,12 @@ class OWBagofWords(OWWidget):
                 self.error("The data has no string attributes")
                 self.textAttribute = "-"
                 self.nDocuments = "-"
+                self.nWords = "-"
                 self.data = None
         else:
             self.textAttribute = "-"
             self.nDocuments = "-"
+            self.nWords = "-"
             self.data = None
 
         self.apply()
@@ -73,6 +77,7 @@ class OWBagofWords(OWWidget):
             if self.TFIDF:
                 newdata = orngText.PreprocessorConstructor_tfidf()(newdata)(newdata)
             self.send("Example Table", newdata)
+            self.nWords = len(newdata.domain.getmetas(orngText.TEXTMETAID))
             pb.finish()
         else:
             self.send("Example Table", None)
