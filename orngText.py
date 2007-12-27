@@ -391,7 +391,7 @@ def loadFromListWithCategories(fileName):
     return data
 
 
-def bagOfWords(exampleTable, preprocessor=None, textAtribute=None, stopwords = None, callback = None):
+def bagOfWords(exampleTable, preprocessor=None, textAttributePos = "text", stopwords = None, callback = None):
     """
         by default, text attribute is the last string attribute in the list of attributes ----> no default, or text default (reason, all attributes are String)
     """
@@ -413,12 +413,12 @@ def bagOfWords(exampleTable, preprocessor=None, textAtribute=None, stopwords = N
     for ex in data:
         if not preprocessor:
            if stopwords:
-              tokens = boundary_split(ex['text'].value.decode('utf-8','ignore').encode('cp1250','ignore'))
+              tokens = boundary_split(ex[textAttributePos].value.decode('utf-8','ignore').encode('cp1250','ignore'))
               tokens = [w for w in tokens if w.lower() not in stopwords]
            else:
-              tokens = boundary_split(ex['text'].value.decode('utf-8','ignore').encode('cp1250','ignore'))
+              tokens = boundary_split(ex[textAttributePos].value.decode('utf-8','ignore').encode('cp1250','ignore'))
         else:
-            tokens = preprocessor.removeStopwords(preprocessor.tokenize(preprocessor.lemmatize(preprocessor.lowercase(ex['text'].value))))
+            tokens = preprocessor.removeStopwords(preprocessor.tokenize(preprocessor.lemmatize(preprocessor.lowercase(ex[textAttributePos].value))))
         wordList = dict.fromkeys(tokens, 0)
         for token in tokens:
             wordList[token] += 1.0
@@ -783,7 +783,7 @@ def FSMMax(table, threshold, perc = True):
 ##         i -= 1
 ##      return [i[0] for i in table[:i + 1]]
 
-def FSS(table, funcName, operator, threshold, perc = True):
+def FSS(table, funcName, operator, threshold, perc = True, callback=None):
    import math
    if perc and threshold > 1:
       threshold = threshold / 100.
@@ -810,7 +810,7 @@ def FSS(table, funcName, operator, threshold, perc = True):
    #newTable = orange.ExampleTable(orange.Domain(domaincopy))
 
    metadict = dict([(table.domain.metaid(i), orange.FloatVariable(i)) for i in metas])
-   print 'I know what to remove'
+   if callback: callback()
    #m2 = dict([(v.name, k) for k, v in metadict.items()])
 ##   for ex in table:
 ##      newex = orange.Example(domaincopy)
@@ -878,7 +878,7 @@ def DSMWF(table, threshold, max):
 
 
 
-def DSS(table, funcName, operator, threshold):
+def DSS(table, funcName, operator, threshold, callback=None):
    """Document subset selection. Takes a function name and an operator and
     removes the documents with the desired measure below (or above) the threshold.
    """
@@ -897,7 +897,7 @@ def DSS(table, funcName, operator, threshold):
         for k in ex.getmetas(TEXTMETAID).keys():
             removedMetas.add(k)
         
-   
+   if callback: callback()
    for ex in newTable:
         for k, v in ex.getmetas(TEXTMETAID).items():
             if k in removedMetas:
