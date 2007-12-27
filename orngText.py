@@ -909,8 +909,8 @@ def DSS(table, funcName, operator, threshold, callback=None):
 
    
 
-def extractLetterNGram(table, n=2, callback = None):
-   """Builds the letter ngram features.
+def extractLetterNGram(table, n=2, callback = None, textAttributePos = "text"):
+   """Build the letter ngram features.
     n is the window size (size of ngrams).
    """
     
@@ -921,7 +921,7 @@ def extractLetterNGram(table, n=2, callback = None):
    ngramsSet = set([])
    allngrams = {}
    for ex in newTable:
-      text = ex['text'].value
+      text = ex[textAttributePos].value
       i = 0
       ngrams = {}
       while i < len(text) - n + 1:

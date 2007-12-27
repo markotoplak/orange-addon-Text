@@ -27,16 +27,43 @@ class OWLetterNgram(OWWidget):
         self.lblFeatureNo = QLabel("\nNo. of features: ", self.controlArea)
         self.adjustSize()
         
+        box = OWGUI.widgetBox(self.controlArea, "Text attribute", addSpace = True)
+        self.textAttributePos = None
+        self.attributesCombo = OWGUI.comboBox(box, self, "textAttributePos", callback = self.setTextAttribute)
+
+        
 
     def dataset(self, data):
         if data:
-            self.data = orange.ExampleTable(data)
-            self.tmpData = orange.ExampleTable(data)
-            self.tmpDom = orange.Domain(data.domain)            
-            #self.data.domain = orange.Domain(data.domain)
+                self.textAttributePos = None
+                for i in range(0, len(data.domain.attributes)):
+                    if isinstance(data.domain.attributes[i], orange.StringVariable):
+                        self.attributesCombo.insertItem(data.domain.attributes[i].name)
+                if self.textAttributePos == None:
+                    #if no attribute is chosen as text attribute, then take the one named "text"
+                    for i in range(0, len(data.domain.attributes)):
+                        if data.domain.attributes[i].name == "text":
+                            #self.textAttributePos = len(data.domain.attributes) - i
+                            #self.textAttribute = data.domain.attributes[-i].name
+                            self.textAttribute = "text"
+                            self.textAttributePos = i
+                            self.data = orange.ExampleTable(data)
+                            self.tmpData = orange.ExampleTable(data)
+                            self.tmpDom = orange.Domain(data.domain) 
+                            self.error()
+                            break
+                    else:
+                        self.error("The data has no string attributes")
+                        self.textAttribute = "-"
+                        self.data = None
+                else:
+                    self.data = orange.ExampleTable(data)
+                    self.tmpData = orange.ExampleTable(data)
+                    self.tmpDom = orange.Domain(data.domain)            
         else:
             self.data = None
             self.tmpData = None
+            self.textAttribute = "-"
             self.lblFeatureNo.setText("\nNo. of features: \n0")
 
         self.apply()
@@ -45,12 +72,25 @@ class OWLetterNgram(OWWidget):
         if self.data:
             pb = OWGUI.ProgressBar(self, iterations=len(self.data))
             self.data = orange.ExampleTable(orange.Domain(self.tmpDom), self.tmpData)
-            newdata = orngText.extractLetterNGram(self.data, self.size + 2, callback=pb.advance)
+            newdata = orngText.extractLetterNGram(self.data, self.size + 2, textAttributePos=self.textAttributePos, callback=pb.advance)
             self.lblFeatureNo.setText("\nNo. of features: \n%d" % len(newdata.domain.getmetas(orngText.TEXTMETAID)))
             self.send("Example Table", newdata)
             pb.finish()
         else:
             self.send("Example Table", None)
+
+    def setTextAttribute(self):
+        #this is necessary if not all attributes are string attributes. In that case,
+        #the value in the combo box does not correspond to the index of the attribute
+        #and we have to use this function to determine it
+        name = self.attributesCombo.currentText()
+        for i in range (len(self.data.domain.attributes)):
+            if self.data.domain.attributes[i].name == name:
+                self.textAttributePos = i
+                self.textAttribute = name
+                break
+
+
 
 
 if __name__ == "__main__":
