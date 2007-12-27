@@ -62,15 +62,18 @@ class OWTextFeatureSelection(OWWidget):
 
 
     def apply(self):
+        pb = OWGUI.ProgressBar(self, iterations=3)
+        pb.advance()
         if self.measureDict[self.chosenMeasure[0]] == 'WF' or self.measureDict[self.chosenMeasure[0]] == 'NF':
             #self.data = orngText.DSS(self.data, self.measures[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold)
-            self.data = orngText.DSS(self.tmpData, self.measureDict[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold)
+            self.data = orngText.DSS(self.tmpData, self.measureDict[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold, callback=pb.advance)
         else:
             #self.data = orngText.FSS(self.data, self.measures[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold, self.perc)
-            self.data = orngText.FSS(self.tmpData, self.measureDict[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold, self.perc)
+            self.data = orngText.FSS(self.tmpData, self.measureDict[self.chosenMeasure[0]], self.operators[self.chosenOp[0]], self.threshold, self.perc, callback=pb.advance)
         self.selections.append(self.measureDict[self.chosenMeasure[0]] + ' ' + self.operators[self.chosenOp[0]] + ' ' + str(self.threshold) + ' percentage=' + str(self.perc))
         self.data.selection = deepcopy(self.selections)
         self.send("Example Table", self.data)
+        pb.finish()
         self.computeStatistics()
         self.applyButton.setDisabled(1)
 
@@ -80,7 +83,7 @@ class OWTextFeatureSelection(OWWidget):
             self.data = orange.ExampleTable(data)
             self.tmpData = orange.ExampleTable(data)
             self.tmpDom = orange.Domain(data.domain)
-            self.computeStatistics()
+            #self.computeStatistics()
             self.apply()
             self.applyButton.setDisabled(1)
         else:
@@ -104,6 +107,7 @@ class OWTextFeatureSelection(OWWidget):
         self.lblDocNo.setText("No. of documents: %d" % docNo)
         #compute document statistics        
         #max = min = len(self.data[0].getmetas())
+        pb = OWGUI.ProgressBar(self, iterations=2 * docNo)
         max = 0
         min = ()
         sum = 0
@@ -114,6 +118,7 @@ class OWTextFeatureSelection(OWWidget):
                 max = featNo
             if featNo < min:
                 min = featNo
+            pb.advance()
         avg = sum / docNo
         if min == ():
             min = 0
@@ -135,12 +140,16 @@ class OWTextFeatureSelection(OWWidget):
         maxword = minword = ''
         
         for ex in self.data:
-           for v in ex.getmetas(orngText.TEXTMETAID).values():
-              varname = v.variable.name
-              if words.has_key(varname):
-                 words[varname] += v.value
-              else:
-                 words[varname] = v.value
+            for v in ex.getmetas(orngText.TEXTMETAID).values():
+                varname = v.variable.name
+                if words.has_key(varname):
+                    words[varname] += v.value
+                else:
+                    words[varname] = v.value
+            pb.advance()
+        pb.finish()
+
+        pb = OWGUI.ProgressBar(self, iterations = len(words))
         for word,freq in words.items():
             if freq > max:
                 max = freq
@@ -149,6 +158,7 @@ class OWTextFeatureSelection(OWWidget):
                 min = freq
                 minword = word
             sum += freq
+            pb.advance()
         avg = sum / len(words)
         if min == ():
             min = 0
@@ -156,6 +166,7 @@ class OWTextFeatureSelection(OWWidget):
         self.lblMin.setText("Min: %d  Min word = %s" % (min, minword))
         self.lblMax.setText("Max: %d  Max word = %s" % (max,maxword))
         self.lblAvg.setText("Avg: %.3f" % avg)
+        pb.finish()
 
     def selectionChanged(self):
         if self.data:

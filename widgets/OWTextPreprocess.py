@@ -114,7 +114,7 @@ class OWTextPreprocess(OWWidget):
         for i in range (len(self.data.domain.attributes)):
             if self.data.domain.attributes[i].name == name:
                 self.textAttributePos = i
-                self.textAttribute = names
+                self.textAttribute = name
                 break
 
 if __name__ == "__main__":
