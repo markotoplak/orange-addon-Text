@@ -28,8 +28,11 @@ class OWTextDistance(OWWidget):
 
     def apply(self):
         if self.data:
-            pb = OWGUI.ProgressBar(self, iterations=(len(self.data) ** 2)/2.)
-            dist = orngText.cos(self.data, distance = self.distanceType, callback = pb.advance)
+            #pb = OWGUI.ProgressBar(self, iterations=(len(self.data) ** 2)/2.)
+            #dist = orngText.cos(self.data, distance = self.distanceType, callback = pb.advance)
+            pb = OWGUI.ProgressBar(self, iterations=2)
+            pb.advance()
+            dist = orange.textCos(self.data, self.distanceType, orngText.TEXTMETAID)
             dist.setattr("items", self.data)
             self.send("Distance Matrix", dist)
             pb.finish()
