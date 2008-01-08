@@ -62,6 +62,7 @@ class OWTextPreprocess(OWWidget):
             for i in range(0, len(data.domain.attributes)):
                 if isinstance(data.domain.attributes[i], orange.StringVariable):
                     self.attributesCombo.insertItem(data.domain.attributes[i].name)
+                    self.textAttributePos = i
             if self.textAttributePos == None:
                 #if no attribute is chosen as text attribute, then take the one named "text"
                 for i in range(0, len(data.domain.attributes)):
@@ -110,6 +111,7 @@ class OWTextPreprocess(OWWidget):
         #this is necessary if not all attributes are string attributes. In that case,
         #the value in the combo box does not correspond to the index of the attribute
         #and we have to use this function to determine it
+        if not self.data: return
         name = self.attributesCombo.currentText()
         for i in range (len(self.data.domain.attributes)):
             if self.data.domain.attributes[i].name == name:
