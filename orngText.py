@@ -76,8 +76,28 @@ import re
 import orange
 import orngTextWrapper
 import types
+import warnings
 
 TEXTMETAID = 7
+
+def getTextAttributePos(data, textAttribute=None, issueWarning=True):
+    """return a position of a last string attribute,
+    if textAttribute not None checks if this is string,
+    return None if no string attribute found"""
+    if textAttribute not in data.domain:
+        textAttribute = None
+    if textAttribute != None and data.domain[textAttribute].varType == orange.VarTypes.String:
+        return data.domain.attributes.index(data.domain[textAttribute])
+    else:
+        atts = list(data.domain.attributes)
+        atts.reverse()
+        for a in atts:
+            if a.varType == orange.VarTypes.String:
+                return data.domain.attributes.index(data.domain[a])
+    if issueWarning:
+        warnings.warn("Data file includes no text attribute")
+    return None
+
 
 def loadWordSet(f):
     try:
@@ -129,23 +149,17 @@ class Preprocess(object):
     def _utf2out(self, s):
        return s.decode('utf-8', 'ignore').encode(self.outputEncoding, 'ignore')
         
-    def doOnExampleTable(self, data, textAttributePos = None, meth = None, callback = None):
+    def doOnExampleTable(self, data, textAttribute=None, meth=None, callback=None):
         newData = orange.ExampleTable(data)
-        if not textAttributePos:
-            #user didn't select text attribute, take the last string attribute by default
-            for i in range(len(data.domain.attributes) - 1, 0, -1):
-                if isinstance(data.domain.attributes[i], orange.StringVariable):
-                    textAttributePos = i
-                    print data.domain, i
-                    break
+        textAttributePos = getTextAttributePos(data, textAttribute)
         for ex in newData:
             ex[textAttributePos] = meth(ex[textAttributePos].value)
             if callback:
                 callback()
         return newData
         
-    def lemmatizeExampleTable(self, data, textAttributePos, callback = None):
-        return self.doOnExampleTable(data, textAttributePos, self.lemmatize, callback)
+    def lemmatizeExampleTable(self, data, textAttribute, callback = None):
+        return self.doOnExampleTable(data, textAttribute, self.lemmatize, callback)
         
     def lemmatize(self, token):
         if isinstance(token, types.StringTypes):
@@ -155,23 +169,19 @@ class Preprocess(object):
         else:
             raise TypeError
 
-    def lowercase(self, text):
-        """Converts the word to lowercase."""
+    def lowercaseExampleTable(self, data, textAttribute=None, callback=None):
+        """return a data set whith a text of a text attribute in lowercase"""
+        textAttributePos = getTextAttributePos(data, textAttribute)
+        return self.doOnExampleTable(data, textAttributePos, self.lowercase, callback)
 
-#        import string
-#        return string.lower(text)
+    def lowercase(self, text, textAttribute=None):
+        """return a string in lowercase"""
         text = text.decode(self.inputEncoding, "ignore")
         return text.lower().encode(self.inputEncoding)
-    
-##        try:
-##            # token or text
-##            token + ""
-##            return self._utf2out(self.lemmatizer(token))
-##        except TypeError:
-##            # list
-##            return [self._utf2out(self.lemmatizer(t)) for t in token]
 
-    def removeStopwordsFromExampleTable(self, data, textAttributePos, callback = None):
+
+    def removeStopwordsFromExampleTable(self, data, textAttribute=None, callback = None):
+        textAttributePos = getTextAttributePos(data, textAttribute)
         return self.doOnExampleTable(data, textAttributePos, self.removeStopwords, callback)
     
     def removeStopwords(self, text):
@@ -390,17 +400,13 @@ def loadFromListWithCategories(fileName):
     f.close()
     return data
 
-
-def bagOfWords(exampleTable, preprocessor=None, textAttributePos = "text", stopwords = None, callback = None):
-    """
-        by default, text attribute is the last string attribute in the list of attributes ----> no default, or text default (reason, all attributes are String)
-    """
-    p = preprocessor #or Preprocess('en')
-    #domain = exampleTable.domain
-
+def bagOfWords(exampleTable, preprocessor=None, textAttribute=None, stopwords=None, callback=None):
+    """given the data return a bag-of-words representation for one of its string attributes"""
+    p = preprocessor
     domaincopy = orange.Domain(exampleTable.domain)
     # create new ExampleTable
     data = orange.ExampleTable(exampleTable)
+    textAttributePos = getTextAttributePos(data, textAttribute)
     #data.domain = orange.Domain(exampleTable.domain)
 
     # for ex in exampleTable:
@@ -660,42 +666,26 @@ class PreprocessorConstructor_tfidf:
         return Preprocessor_tfidf(normalizers)
 
 
-
-def cos(data, normalize = True, distance = 0, callback = None):
-    import numpy
-    from math import sqrt
-    from time import time
-    time1 = time()
-    c = orange.SymMatrix(len(data))
-##    for i, ex1 in enumerate(data):
-##        for j in range(i):
-##            ex1metas = ex1.getmetas(TEXTMETAID)
-##            ex2metas = data[j].getmetas(TEXTMETAID)
-##            c[i, j] = sum([v1 * ex2metas.get(id, 0) for id, v1 in ex1metas.items()])
-##            if normalize and c[i, j]:
-##                c[i, j] /= sqrt(sum([i**2 for i in ex2metas.values()]) * sum([i**2 for i in ex1metas.values()]))
-
-    metas = {}
-    for i, ex in enumerate(data):
-        metas[i] = ex.getmetas(TEXTMETAID)
-    for i, ex1 in enumerate(data):
-        for j in range(i):
-            #ex1metas = ex1.getmetas(TEXTMETAID)
-            #ex2metas = data[j].getmetas(TEXTMETAID)
-            if not distance:
-                c[i, j] = float(sum([v1 * metas[j].get(id, 0) for id, v1 in metas[i].items()]))
-            else:
-                try:
-                    c[i, j] = 1. / float(sum([v1 * metas[j].get(id, 0) for id, v1 in metas[i].items()]))
-                except:
-                    c[i, j] = 10000000
-            if normalize and c[i, j]:
-                c[i, j] /= sqrt(sum([k**2 for k in metas[j].values()])) * sqrt(sum([p**2 for p in metas[i].values()]))
-            if callback: callback()
-        
-    print "Total time for cos was %s seconds" % str(time() - time1)
-    return c
-
+def cos(bow, normalize = True, distance = 0, callback = None, metaClass=TEXTMETAID):
+   """returns distance matrix for bag-of-words measured as cosine of a angle btw feature vectors"""
+   from math import sqrt
+   c = orange.SymMatrix(len(bow))
+   metas = {}
+   for i, ex in enumerate(bow):
+      metas[i] = ex.getmetas(metaClass)
+   for i, ex1 in enumerate(bow):
+      for j in range(i):
+         if not distance:
+            c[i, j] = float(sum([v1 * metas[j].get(id, 0) for id, v1 in metas[i].items()]))
+         else:
+            try:
+               c[i, j] = 1. / float(sum([v1 * metas[j].get(id, 0) for id, v1 in metas[i].items()]))
+            except:
+               c[i, j] = 10000000
+         if normalize and c[i, j]:
+            c[i, j] /= sqrt(sum([k**2 for k in metas[j].values()])) * sqrt(sum([p**2 for p in metas[i].values()]))
+         if callback: callback()
+   return c
 
 def FSMRandom(table, perc = True):
    from random import random
@@ -909,11 +899,11 @@ def DSS(table, funcName, operator, threshold, callback=None):
 
    
 
-def extractLetterNGram(table, n=2, callback = None, textAttributePos = "text"):
-   """Build the letter ngram features.
-    n is the window size (size of ngrams).
-   """
-    
+def extractLetterNGram(table, n=2, callback=None, textAttribute=None):
+   """returns a data set with a  letter ngram features from a selected text attribute
+   n is the window size (size of ngrams)"""
+
+   textAttributePos = getTextAttributePos(table, textAttribute)
    domaincopy = orange.Domain(table.domain)
    newTable = orange.ExampleTable(table)
    #newTable.domain = orange.Domain(table.domain)
