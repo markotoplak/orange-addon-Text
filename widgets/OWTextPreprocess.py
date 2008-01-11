@@ -11,23 +11,28 @@ import orngText
 import OWGUI
 
 class OWTextPreprocess(OWWidget):
+    contextHandlers = {"": DomainContextHandler("", [ContextField("textAttribute", DomainContextHandler.Required)])}
     settingsList=["lowerCase", "stopWords", "lematizer", "selectedLanguage"]
 
     def __init__(self, parent=None, signalManager=None):
         OWWidget.__init__(self,parent,signalManager,"Preprocess")
-        self.langDict = {0: 'bg', 1: 'cs', 2: 'en', 3: 'es', 4: 'et', 5: 'fr',
-            6: 'ge', 7: 'hr', 8: 'hu', 9: 'it', 10: 'ro', 11: 'sl', 12: 'sr'}
-        self.selectedLanguage = 2
-        #OWWidget.__init__(self,parent,"Rules")
+
         self.inputs = [("Example Table", ExampleTable, self.dataset)]
         self.outputs = [("Example Table", ExampleTable)]
 
+        self.langDict = {0: 'bg', 1: 'cs', 2: 'en', 3: 'es', 4: 'et', 5: 'fr',
+            6: 'ge', 7: 'hr', 8: 'hu', 9: 'it', 10: 'ro', 11: 'sl', 12: 'sr'}
+        self.selectedLanguage = 2
         self.lowerCase = self.stopWords = self.lematizer = True
-        self.textAttribute = "-"
-        self.nDocuments = "-"
+        self.textAttribute = None
+        self.nDocuments = "N/A"; self.nStrAttributes = "N/A"
         self.data = None
 
-        
+        self.loadSettings()
+
+        box = OWGUI.widgetBox(self.controlArea, "Info", addSpace = True)
+        OWGUI.label(box, self, "Documents: %(nDocuments)s")
+        OWGUI.label(box, self, "String attributes: %(nStrAttributes)s")
 
         box = OWGUI.widgetBox(self.controlArea, "Options", addSpace = True)
         OWGUI.checkBox(box, self, "lowerCase", "Convert to lower case")
@@ -35,59 +40,38 @@ class OWTextPreprocess(OWWidget):
         OWGUI.checkBox(box, self, "lematizer", "Lematize")
         
         btnLabels = ["Bulgarian", "Czech", "English", "Spanish", "Estonian", "French", "German", "Croatian", "Hungarian", "Italian", "Romanian", "Slovenian", "Serbian"]
-        box = OWGUI.widgetBox(self.controlArea, "Language", addSpace = True)
-        self.langCombo = OWGUI.comboBox(box, self, "selectedLanguage")
-        for i in range(0, len(btnLabels)):
-            self.langCombo.insertItem(QPixmap(os.path.dirname(__file__) + "/icons/" + self.langDict[i] +".png"), btnLabels[i])
+
+        self.langCombo = OWGUI.comboBox(self.controlArea, self, "selectedLanguage", box="Language", addSpace=True)
+        for (i, label) in enumerate(btnLabels):
+            self.langCombo.insertItem(QPixmap(os.path.dirname(__file__) + "/icons/" + self.langDict[i] +".png"), label)
+        self.langCombo.setCurrentItem(self.selectedLanguage)
         
-        self.loadSettings()
-        
-        box = OWGUI.widgetBox(self.controlArea, "Text attribute", addSpace = True)
-        self.textAttributePos = None
-        self.attributesCombo = OWGUI.comboBox(box, self, "textAttributePos", callback = self.setTextAttribute)
-
-        box = OWGUI.widgetBox(self.controlArea, "Info", addSpace = True)
-        OWGUI.label(box, self, "Number of documents: %(nDocuments)s")
-        OWGUI.label(box, self, "Text attribute: %(textAttribute)s")
-
-
-        OWGUI.button(self.controlArea, self, "Apply", self.apply)
-
+        self.attributesCombo = OWGUI.comboBox(self.controlArea, self, "textAttribute", box="Text attribute", callback=self.apply)
         self.adjustSize()       
         
-
     def dataset(self, data):
+        self.closeContext()
         if data:
-            self.textAttributePos = None
-            for i in range(0, len(data.domain.attributes)):
-                if isinstance(data.domain.attributes[i], orange.StringVariable):
-                    self.attributesCombo.insertItem(data.domain.attributes[i].name)
-                    self.textAttributePos = i
-            if self.textAttributePos == None:
-                #if no attribute is chosen as text attribute, then take the one named "text"
-                for i in range(0, len(data.domain.attributes)):
-                    if data.domain.attributes[i].name == "text":
-                        #self.textAttributePos = len(data.domain.attributes) - i
-                        #self.textAttribute = data.domain.attributes[-i].name
-                        self.textAttribute = "text"
-                        self.textAttributePos = i
-                        self.nDocuments = len(data)
-                        self.data = data
-                        self.error()
-                        break
-                else:
-                    self.error("The data has no string attributes")
-                    self.textAttribute = "-"
-                    self.nDocuments = "-"
-                    self.data = None
-            else:
-                self.data = data
-                self.nDocuments = len(data)
+            self.textAttribute = None
+            k = 0
+            for (indx, att) in enumerate(data.domain.attributes):
+                if isinstance(att, orange.StringVariable):
+                    self.attributesCombo.insertItem(att.name)
+                    self.textAttribute = indx
+                    k += 1
+            if not self.textAttribute:
+                self.error("The data has no string attributes")
+                self.nDocuments = "N/A"; self.nStrAttributes = "N/A"
+                self.data = None
+                self.send("Example Table", None)
+                return
+            self.nDocuments = len(data)
+            self.nStrAttributes = k
         else:
-            self.textAttribute = "-"
-            self.nDocuments = "-"
-            self.data = None
-
+            self.nDocuments = "N/A"; self.nStrAttributes = "N/A"
+        self.error() # clear any error message
+        self.data = data
+        self.openContext("", data)
         self.apply()
 
     def apply(self):
@@ -97,11 +81,11 @@ class OWTextPreprocess(OWWidget):
             newData = orange.ExampleTable(orange.Domain(self.data.domain), self.data)
             preprocess = orngText.Preprocess(language = self.langDict[self.selectedLanguage])
             if self.lowerCase:
-                newData = preprocess.doOnExampleTable(newData, self.textAttributePos, preprocess.lowercase, callback=pb.advance)
+                newData = preprocess.doOnExampleTable(newData, self.textAttribute, preprocess.lowercase, callback=pb.advance)
             if self.stopWords:
-                newData = preprocess.removeStopwordsFromExampleTable(newData, self.textAttributePos, callback=pb.advance)
+                newData = preprocess.removeStopwordsFromExampleTable(newData, self.textAttribute, callback=pb.advance)
             if self.lematizer:
-                newData = preprocess.lemmatizeExampleTable(newData, self.textAttributePos, callback=pb.advance)
+                newData = preprocess.lemmatizeExampleTable(newData, self.textAttribute, callback=pb.advance)
             pb.finish()
         else:
             newData = None
@@ -122,6 +106,12 @@ class OWTextPreprocess(OWWidget):
 if __name__ == "__main__":
     a = QApplication(sys.argv)
     ow = OWTextPreprocess()
+    ow.activateLoadedSettings()
     a.setMainWidget(ow)
     ow.show()
+
+#   data = orngText.loadFromXML('r'c:\test\orange\msnbc.xml')
+    data = orange.ExampleTable("tmp-pubmed-chemogenomics.tab")
+    ow.dataset(data)
     a.exec_loop()
+    ow.saveSettings()
