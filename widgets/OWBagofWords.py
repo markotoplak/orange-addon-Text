@@ -57,6 +57,9 @@ class OWBagofWords(OWWidget):
             self.nStrAttributes = k
         else:
             self.nDocuments = "N/A"; self.nStrAttributes = "N/A"; self.nWords = "N/A"
+            self.send("Bag-of-words", None)
+            self.data = data
+            return
         self.error() # clear any error message
         self.data = data
         self.openContext("", data)
