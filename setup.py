@@ -26,14 +26,12 @@ for (dirp, dirns, n) in os.walk('doc'):
 #lngFiles = glob.glob('language_data/*.bin') + glob.glob('language_data/*.fsa') + glob.glob('language_data/*.txt')
 #lngFiles = [f.replace('\\', '/').split('/')[1] for f in lngFiles]
 
-icons = glob.glob(os.path.join('widgets', 'icons', '*.png'))
-
 setup(name = "orngText",
       version = "0.1.0",
       description = "Text preprocessing utilities for Orange",
       packages = [ 'widgets', 'language_data', 'doc' ],
 
-      package_data = {'language_data': ['*.bin', '*.fsa', '*.txt'], 'doc': docFiles, 'widgets/icons': icons},
+      package_data = {'language_data': ['*.bin', '*.fsa', '*.txt'], 'doc': docFiles, 'widgets': ['icons/*.png']},
 
       py_modules = [ 'orngText', 'orngTextWrapper' ],
       extra_path = "orngText",
