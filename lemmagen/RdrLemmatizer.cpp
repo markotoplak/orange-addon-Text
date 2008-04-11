@@ -87,6 +87,110 @@ char *RdrLemmatizer::Lemmatize(const char *acWord, char *acOutBuffer) const{
 			if (bNewSufxLen!=255) {	iAddr = iParentAddr; break; } 
 
 			//right node, but we are at the end (there will be no new loop) finish by returning this rule
+			if ((bType & ~BitEntireWr) == TypeLeafAC) break;
+
+			//right node and we need to go on with subnodes (it si probably type TypeIntrAC )
+			//set iTmpAddr to start of hashtable
+			iTmpAddr += abData[iTmpAddr-LenSpecLen];
+		} 
+
+		//move lookup char back
+		bLookChar--;
+		//check if we are still inside the word (bLookChar==0 when at the begining of word)
+		if (bLookChar<0) {
+			//this means that we are just one character in front of the word so we must look for entireword entries
+			if((bType & BitInternal) == BitInternal) {
+				//go to the hashtable position 0(NULL) and look idf address is not NULL
+				iTmpAddr += ModLen;
+				byte bChar = abData[iTmpAddr];
+				GETDWORD(,iTmpAddr,iTmpAddr+CharLen);
+				if (bChar == NULL && iTmpAddr!=NULL) {
+					//we have a candidate for entireword, redirect addresses
+					iParentAddr = iAddr;
+					iAddr = iTmpAddr;
+					bType = abData[iAddr];
+					//increase lookchar (because we actualy eat one character)
+					bLookChar++;
+				}
+			}
+			break;
+		}
+		
+		//find best node in hash table
+		if((bType & BitInternal) == BitInternal) {
+			byte bMod = abData[iTmpAddr];
+			byte bChar = acWord[bLookChar];
+
+			iTmpAddr += ModLen + (bChar%bMod)*(AddrLen+CharLen); 
+
+			iTmpAddr = abData[iTmpAddr] == bChar ? iTmpAddr + CharLen : iAddr + FlagLen;
+
+			iParentAddr = iAddr;
+			GETDWORD(,iAddr, iTmpAddr);
+			bType = abData[iAddr];
+
+			if ((bType & ~BitEntireWr) == TypeRule) break;
+		}
+	}
+	//if this is entire-word node, and we are not at the begining of word it's wrong node - take parents
+	if((bType & BitEntireWr) == BitEntireWr && bLookChar!=0) {
+		iAddr = iParentAddr;
+		bType = abData[iAddr];
+	}
+
+	//search ended before we came to te node of type rule but current node is OK so find it's rule node
+	if((bType & ~BitEntireWr) != TypeRule)  GETDWORD( ,iAddr, iAddr+FlagLen);
+	
+	//we have (100%) node of type rule for lemmatization - now it's straight forward to lemmatize
+	//read out rule
+	iTmpAddr = iAddr + FlagLen;
+	byte iFromLen = abData[iTmpAddr];
+	iTmpAddr += LenSpecLen;
+	byte iToLen = abData[iTmpAddr];
+	iTmpAddr += LenSpecLen;
+
+	//prepare output buffer
+	byte iStemLen = bWordLen - iFromLen;
+	char *acReturn = acOutBuffer == NULL ? new char[iStemLen + iToLen + 1] : acOutBuffer;
+	
+	//do actual lematirazion using given rule
+	memcpy(acReturn, acWord, iStemLen);
+	memcpy(&acReturn[iStemLen], &abData[iTmpAddr], iToLen);
+	acReturn[iStemLen + iToLen] = NULL;
+	
+	return acReturn;
+}
+
+
+/*  OLD VERSION
+char *RdrLemmatizer::Lemmatize(const char *acWord, char *acOutBuffer) const{
+	byte bWordLen = strlen(acWord);
+
+	dword iAddr = DataStart;
+	dword iParentAddr = DataStart;
+	dword iTmpAddr;
+	char bLookChar = bWordLen;
+	byte bType = abData[iAddr];
+
+	while(true) {
+		iTmpAddr = iAddr+FlagLen+AddrLen;
+				
+		//check if additional characters match
+		if ((bType & BitAddChar) == BitAddChar) {
+			byte bNewSufxLen = abData[iTmpAddr];
+			iTmpAddr += LenSpecLen;
+
+			bLookChar -= bNewSufxLen;
+
+			//test additional chars if ok
+			if (bLookChar>=0)
+				do bNewSufxLen--;
+				while (bNewSufxLen!=255 && abData[iTmpAddr+bNewSufxLen] == (byte) acWord[bLookChar+bNewSufxLen]);
+
+			//wrong node, take parents rule
+			if (bNewSufxLen!=255) {	iAddr = iParentAddr; break; } 
+
+			//right node, but we are at the end (there will be no new loop) finish by returning this rule
 			if (bType == TypeLeafAC) break;
 
 			//right node and we need to go on with subnodes
@@ -131,7 +235,7 @@ char *RdrLemmatizer::Lemmatize(const char *acWord, char *acOutBuffer) const{
 	acReturn[iStemLen + iToLen] = NULL;
 	
 	return acReturn;
-}
+} */
 
 
 //-------------------------------------------------------------------------------------------

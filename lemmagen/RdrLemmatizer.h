@@ -60,9 +60,13 @@ typedef unsigned long long qword;
 #define BitDefault	0x00
 #define BitAddChar	0x01
 #define BitInternal	0x02
+#define BitEntireWr	0x04
+
 
 #define TypeRule	(BitDefault)
+#define TypeRuleEw		(BitDefault | BitEntireWr)
 #define TypeLeafAC	(BitDefault | BitAddChar)
+#define TypeLeafACEw	(BitDefault | BitAddChar | BitEntireWr)
 #define TypeIntr	(BitDefault | BitInternal)
 #define TypeIntrAC	(BitDefault | BitAddChar | BitInternal)
 
