@@ -64,8 +64,6 @@ from orngText import orngText - jel moze to bolje (proucit python pakete)
 
 """
 
-
-
 import sys
 if sys.version < "2.4":
    from sets import Set
@@ -138,6 +136,7 @@ class Preprocess(object):
         self.inputEncoding = inputEncoding
         self.outputEncoding = outputEncoding
         self.tokenize = boundary_split
+        self.removedWords = []
         if normType == 'stem' and len(self.langData[language]) == 3:
             self.lemmatizer, self.stopwords = (self.langData[language][2], self.langData[language][1])
         else:
@@ -197,15 +196,21 @@ class Preprocess(object):
         else:
             raise TypeError
 
-##        try:
-##            # token or text
-##            token + ""
-##            #return " ".join([t for t in self.tokenize(token) if t not in self.stopwords]) or None #TODO: tmt.removeStopwordstext
-##            return self._utf2out(tmt.removeWords(token, list(self.stopwords)))
-##        except TypeError:
-##            # list
-##            return [self._utf2out(t) for t in token if t not in self.stopwords] or None
-            
+    def removeWordsFromExampleTable(self, data, textAttribute=None, callback = None):
+        textAttributePos = getTextAttributePos(data, textAttribute)
+        return self.doOnExampleTable(data, textAttributePos, self.removeWords, callback)
+   
+    # function filters text for words in removeWords
+    def removeWords(self, text):
+        if isinstance(text, types.StringTypes):
+            tokens = self.tokenize(text)
+            tokens = [token for token in tokens if (self.lowercase(token) not in self.removedWords and len(token) > 2)]
+            text = ' '.join(tokens)
+            return text
+        elif isinstance(text, types.ListType):
+            return [t for t in text if (self.lowercase(t) not in self.removedWords and len(t) > 2)] or None
+        else:
+            raise TypeError        
 
     __languageDataPath = os.path.join(os.path.dirname(__file__), 'language_data')
     langData = {
@@ -775,7 +780,7 @@ def FSMMax(table, threshold, perc = True):
 
 def FSS(table, funcName, operator, threshold, perc = True, callback=None):
    import math
-   if perc and threshold > 1:
+   if (funcName != "ANNIE") and perc and threshold > 1:
       threshold = threshold / 100.
       threshold = min(threshold, 1)
    operators = {'MAX': FSMMax, 'MIN': FSMMin}
@@ -783,7 +788,30 @@ def FSS(table, funcName, operator, threshold, perc = True, callback=None):
    #each FSM function returs a set of metaattributes that need to be removed
    #newTable = orange.ExampleTable(table)
    #newTable.domain = orange.Domain(table.domain)
-   removeList = operators[operator](functions[funcName](table, perc), threshold, perc)
+  
+  
+   # we use FSS which has Annie M. suggested
+   # we order the left words by decreasing frequency (total number
+   # of occurencies through all the texts) : this is the first list and
+   # second we order the words by decreasing occurencies through texts , that
+   # means that we count the number of texts in which the words appear : second list.
+   # We keep  the first 1000 words in each list and take the intersection of
+   # both. In general we have between 850 to 900 words left.
+
+   if funcName == "ANNIE":
+      featuresF = FSMTF(table,False)
+      featuresF.sort(lambda x,y:cmp(y[1],x[1]))
+      featuresF = [x for (x,y) in featuresF] # we take only names 
+      featuresF = set(featuresF[0:threshold])
+      featuresDF = FSMTDF(table,False)
+      featuresDF.sort(lambda x,y:cmp(y[1],x[1]))
+      featuresDF = [x for (x,y) in featuresDF] # only names
+      featuresDF = set(featuresDF[0:threshold])
+      featurestokeep = featuresDF.intersection(featuresF)   # we use a intersection between two lists of terms
+      allfeatures = set([i.name for i in table.domain.getmetas(TEXTMETAID).values()])
+      removeList = list(allfeatures.difference(featurestokeep))
+   else:
+      removeList = operators[operator](functions[funcName](table, perc), threshold, perc)
 
    remMetas = set([])
 ##   for k in removeList:
