@@ -75,6 +75,7 @@ import orange
 import orngTextWrapper
 import types
 import warnings
+from math import log,exp
 
 TEXTMETAID = 7
 
@@ -856,7 +857,8 @@ def FSS(table, funcName, operator, threshold, perc = True, callback=None):
    newTable = orange.ExampleTable(orange.Domain(table.domain), table)
    newTable.domain.removemeta(removeList)
    for ex in newTable:
-      for k, v in ex.getmetas(TEXTMETAID).items():
+      #for k, v in ex.getmetas(TEXTMETAID).items(): the problem is because SVM gets all metas and thus FSS does not nave any influence, probably there is a bug in a removemeta method
+      for k, v in ex.getmetas().items():
          if not v.variable:
             ex.removemeta(k)
    return newTable
@@ -1558,7 +1560,116 @@ def extractNamedEntities(table, preprocessor = None, stopwords = None, callback 
    table.changeDomain(domaincopy)
    #table.domain.removemeta(table.domain.getmetas(TEXTMETAID).keys())
    return newTable
+
+
    
+# implementation of "Multinominal Naive Bayes" for text mining
+# source from Witten & Frank - Data mining: Practical Machine Learning Tools and Techniques, page 94
+# Crt Gorup crt(dot)gorup(at)gmail(dot)com, Albacete 2/4/2008
+# used trick (in order to avoid underflow): log(p(d|c)) = log(c) + sum F_i*log(p(w_i|c))
 
+class TextLearner(object):
+   def __new__(cls,examples=None,name='multinomial naive bayes', **kwds):
+      learner = object.__new__(cls, **kwds)
+      if examples:
+         learner.__init__(name)
+         return learner(examples)
+      else:
+         return learner
 
+   def __init__(self,name='multinomial naive bayes'):
+      self.name = name
+
+   def __call__(self,data,weight=None):
+      domain = data.domain
+      noClasses = len(domain.classVar.values)
+
+      n_class = [0.]*noClasses               # # of document per class
+      words_domain = [a[1].name for a in data.domain.getmetas().items()] # all words in domain
+
+      for e in data:
+         n_class[int(e.getclass())] += 1
+
+      # aprior class probability
+      p_class = [0.]* noClasses             # apriori class probability
+      n_words_class = [0.]*noClasses         # total number of words per class
+      n_words_cond_class = [0.]*noClasses
+      p_words_cond_class = [0.]*noClasses
+
+      for i in range(noClasses):
+         p_class[i] = log((1+n_class[i]) / (len(data)+noClasses))     # log applied ! + Laplace estimate
+         # print "class ",  i , "  ", exp(p_class[i])
+         n_words_cond_class[i] = dict()      # a dict to keep freq of words per class
+         p_words_cond_class[i] = dict()      # a dict to keep cond probability of words per class
+
+      # conditional class probability p(word|class)
+      for e in data:
+         cid = int(e.getclass())
+         for i,g in e.getmetas(7).items():
+            nm = g.variable.name
+            fr = g.value
+            if not n_words_cond_class[cid].has_key(nm):
+               n_words_cond_class[cid][nm] = 0.0
+
+            # increase n(word|class) cunter
+            n_words_cond_class[cid][nm] += fr
+            # increase words in class counter
+            n_words_class[cid] += fr
+
+      # calculate conditional probability
+      for i in range(len(n_words_class)):    # for each class
+         for e in words_domain: # for each word in domain
+            if e in n_words_cond_class[i].keys():  # this word was fund in a leasning set
+               p_words_cond_class[i][e] = log( (1 + n_words_cond_class[i][e]) / (n_words_class[i] + len(words_domain) ))  # log applied log(p(w|c_i))
+            else:
+               p_words_cond_class[i][e] = log(1.0 / (n_words_class[i] + len(words_domain))) # laplace estimate
+
+      return TextClassifier(domain=domain, p_class=p_class, p_cond=p_words_cond_class, name=self.name) # we return a classifier
+
+class TextClassifier(object):
+   def __init__(self,**kwds):
+      self.__dict__ = kwds
+
+   def __call__(self, example,result_type=orange.GetValue):
+      # we have to classify example
+      #p = map(None,self.p_class)
+      # for each word in example
+
+      p = [0.0] * len(self.p_class)
+      p_final =[0.0] * len(self.p_class)
+
+      for c in range(len(self.domain.classVar.values)):
+         for i,g in example.getmetas(7).items():
+            w = g.variable.name
+            fr = g.value         
+            p[c] += (fr * self.p_cond[c][w])
+
+      maxp = max(p)
+
+      for i in range(len(self.p_class)):
+         p_final[i] = exp(self.p_class[i]) * exp(p[i] - maxp) # patch to increase all the probablilities
+
+      # use exp to convert back to numbers
+      #p = map(exp,p)
+      #print p
+      # normalize probabilities to sum to 1
+      sump = sum(p_final)
+      if sump>0:
+        for i in range(len(p_final)): p_final[i] = p_final[i]/sump
+      #print p
+
+      # find the class with highest probability
+      v_index = p_final.index(max(p_final))
+      v = orange.Value(self.domain.classVar, v_index)
+
+      # return the value based on requested return type
+      if result_type == orange.GetValue:
+        return v
+      if result_type == orange.GetProbabilities:
+        return p_final
+      return (v,p_final)
+
+   def show(self):
+      print "class prob=", map(exp,self.p_class)
+      print "log cond prob=", self.p_cond
 
