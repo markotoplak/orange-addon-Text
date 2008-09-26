@@ -56,5 +56,5 @@ setup(name = "orngText",
               define_macros=[('TMTNOZLIB','1'), ('NDEBUG', '1')],
               language='c++')
           ],
-      scripts=["registerWidgets.py"]
+      scripts=["post_install_script.py"]
       )
