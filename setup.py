@@ -22,39 +22,73 @@ for (dirp, dirns, n) in os.walk('doc'):
 		dirn = dirn + '/'
 	docFiles.extend( [dirn + n1r for n1r in nr if '.svn' not in dirp + '/' + n1r] )
 
+modules = [
+        Extension(
+                '_orngTextWrapper',
+                sources=[
+                                'source/orngTextWrapper/Wrapper_wrap.cxx',
+                                'source/orngTextWrapper/Wrapper.cpp',
+                                'source/tmt/common/Common.cpp',
+                                'source/tmt/common/Files.cpp',
+                                'source/tmt/lemmatization/FSADictionary.cpp',
+                                'source/tmt/lemmatization/FSALemmatization.cpp',
+                                'source/tmt/lemmatization/Lemmatization.cpp',
+                                'source/tmt/lemmatization/PorterStemmer.cpp',
+                                'source/tmt/strings/StringUtils.cpp',
+                                'source/tmt/strings/UTF8Tokenizer.cpp',
+                                'source/lemmagen/RdrLemmatizer.cpp'
+                ],
+                extra_compile_args=extra_compile_args,
+                include_dirs=['.', 'source'],
+                define_macros=[('TMTNOZLIB','1'), ('NDEBUG', '1')],
+                language='c++'
+        )
+]
+
+
 # list all language files that need to be included
 #lngFiles = glob.glob('language_data/*.bin') + glob.glob('language_data/*.fsa') + glob.glob('language_data/*.txt')
 #lngFiles = [f.replace('\\', '/').split('/')[1] for f in lngFiles]
+def writeMakeFileDepends():
+        f = open("Makefile.depends", "wt")
 
-setup(name = "orngText",
-      version = "0.1.0",
-      description = "Text preprocessing utilities for Orange",
-      packages = [ 'widgets', 'language_data', 'doc' ],
+        includePaths = []
+        for ext in modules:
+                if ext.include_dirs <> []:
+                        for p in ext.include_dirs:
+                                includePaths.append( "-I%s" % (p))
+        includePaths = " ".join(includePaths)
 
-      package_data = {'language_data': ['*.bin', '*.fsa', '*.txt'], 'doc': docFiles, 'widgets': ['icons/*.png']},
+        if includePaths <> "":
+                f.write("COMPILEOPTIONSMODULES = %s\n" % (includePaths))
 
-      py_modules = [ 'orngText', 'orngTextWrapper' ],
-      extra_path = "orngText",
-      ext_modules = [
-          Extension(
-              '_orngTextWrapper',
-              sources=[
-                  'orngTextWrapper/Wrapper_wrap.cxx',
-                  'orngTextWrapper/Wrapper.cpp',
-                  'tmt/common/Common.cpp',
-                  'tmt/common/Files.cpp',
-                  'tmt/lemmatization/FSADictionary.cpp',
-                  'tmt/lemmatization/FSALemmatization.cpp',
-                  'tmt/lemmatization/Lemmatization.cpp',
-                  'tmt/lemmatization/PorterStemmer.cpp',
-                  'tmt/strings/StringUtils.cpp',
-                  'tmt/strings/UTF8Tokenizer.cpp',
-                  'lemmagen/RdrLemmatizer.cpp'
-                  ],
-              extra_compile_args=extra_compile_args,
-              include_dirs=['.'],
-              define_macros=[('TMTNOZLIB','1'), ('NDEBUG', '1')],
-              language='c++')
-          ],
-      scripts=["post_install_script.py"]
-      )
+        f.write("modules:")
+        for ext in modules:
+                f.write(" %s.so" % (ext.name))
+        f.write("\n")
+
+        for ext in modules:
+                objs = []
+                for s in ext.sources:
+                        if s[-2:] == '.c' or s[-4:] == '.cpp':
+                                objfname = os.path.splitext(os.path.join("..", s))[0] + ".o"
+                                objs.append( objfname)
+                objs = " ".join(objs)
+                f.write("%s.so: %s\n" % (ext.name, objs))
+                f.write("\t$(LINKER) $(LINKOPTIONS) %s -o %s.so" % (objs, os.path.join("..", ext.name)))
+        f.close()
+
+if __name__ == "__main__":
+        setup(name = "orngText",
+                version = "0.1.0",
+                description = "Text preprocessing utilities for Orange",
+                packages = [ 'widgets', 'language_data', 'doc' ],
+
+                package_data = {'language_data': ['*.bin', '*.fsa', '*.txt'], 'doc': docFiles, 'widgets': ['icons/*.png']},
+
+                py_modules = [ 'orngText', 'orngTextWrapper' ],
+                extra_path = "orngText",
+                ext_modules = modules,
+                scripts=["post_install_script.py"]
+        )
+
