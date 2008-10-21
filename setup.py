@@ -79,12 +79,12 @@ def writeMakeFileDepends():
         f.close()
 
 if __name__ == "__main__":
-        setup(name = "orngText",
+        setup(name = "Orange Text Mining",
                 version = "0.1.0",
-                description = "Text preprocessing utilities for Orange",
-                packages = [ 'widgets', 'language_data', 'doc' ],
+                description = "Text Mining Add-On for Orange",
+                packages = [ 'widgets', 'doc' ],
 
-                package_data = {'language_data': ['*.bin', '*.fsa', '*.txt'], 'doc': docFiles, 'widgets': ['icons/*.png']},
+                package_data = {'doc': docFiles, 'widgets': ['icons/*.png']},
 
                 py_modules = [ 'orngText', 'orngTextWrapper' ],
                 extra_path = ("orange-text", "orange/add-ons/Text"),
