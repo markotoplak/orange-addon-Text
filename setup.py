@@ -86,7 +86,7 @@ if __name__ == "__main__":
 
                 package_data = {'doc': docFiles, 'widgets': ['icons/*.png']},
 
-                py_modules = [ 'orngText', 'orngTextWrapper' ],
+                py_modules = [ 'orngText', 'orngTextWrapper', 'textConfiguration'],
                 extra_path = ("orange-text", "orange/add-ons/Text"),
                 ext_modules = modules,
                 scripts=["post_install_script.py"]
