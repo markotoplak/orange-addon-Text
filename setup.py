@@ -87,7 +87,7 @@ if __name__ == "__main__":
                 package_data = {'language_data': ['*.bin', '*.fsa', '*.txt'], 'doc': docFiles, 'widgets': ['icons/*.png']},
 
                 py_modules = [ 'orngText', 'orngTextWrapper' ],
-                extra_path = "orngText",
+                extra_path = ("orange-text", "orange/add-ons/Text"),
                 ext_modules = modules,
                 scripts=["post_install_script.py"]
         )

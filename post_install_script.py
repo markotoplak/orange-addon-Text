@@ -1,6 +1,6 @@
 import distutils
 import distutils.sysconfig
 import sys
-import orngRegistry
+import orngEnviron
 
-orngRegistry.addWidgetCategory("Text Mining", distutils.sysconfig.get_python_lib() + r"\orngText\widgets", "remove" not in sys.argv[1])
+#  no need to do anything
