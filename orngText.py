@@ -213,7 +213,8 @@ class Preprocess(object):
         else:
             raise TypeError        
 
-    __languageDataPath = os.path.join(os.path.dirname(__file__), 'language_data')
+    import textConfiguration
+    __languageDataPath = textConfiguration.datasetsPath
     langData = {
 #            'en' : (lambda x: x, [], lambda x: re.split(r'\b', x, re.DOTALL)),
             'en' : (orngTextWrapper.lemmagen(os.path.join(__languageDataPath,'lem-en.bin')).lemmatizeText,
