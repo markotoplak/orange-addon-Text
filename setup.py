@@ -44,7 +44,7 @@ modules = [
                 language='c++'
         )
 ]
-
+destDir="orange/add-ons/Text"
 
 # list all language files that need to be included
 #lngFiles = glob.glob('language_data/*.bin') + glob.glob('language_data/*.fsa') + glob.glob('language_data/*.txt')
@@ -61,6 +61,7 @@ def writeMakeFileDepends():
 
         if includePaths <> "":
                 f.write("COMPILEOPTIONSMODULES = %s\n" % (includePaths))
+        f.write("DESTDIR = $(PYTHONSITEPKGS)/%s\n" % (destDir))
 
         f.write("modules:")
         for ext in modules:
@@ -76,6 +77,9 @@ def writeMakeFileDepends():
                 objs = " ".join(objs)
                 f.write("%s.so: %s\n" % (ext.name, objs))
                 f.write("\t$(LINKER) $(LINKOPTIONS) %s -o %s.so" % (objs, os.path.join("..", ext.name)))
+                f.write("ifeq ($(OS), Darwin)\n")
+                f.write("\tinstall_name_tool -id $(DESTDIR)/%s.so %s.so" % (ext.name, os.path.join("..", ext.name)))
+                f.write("endif\n")
         f.close()
 
 if __name__ == "__main__":
@@ -87,7 +91,7 @@ if __name__ == "__main__":
                 package_data = {'doc': docFiles, 'widgets': ['icons/*.png']},
 
                 py_modules = [ 'orngText', 'orngTextWrapper', 'textConfiguration'],
-                extra_path = ("orange-text", "orange/add-ons/Text"),
+                extra_path = ("orange-text", destDir),
                 ext_modules = modules,
                 scripts=["post_install_script.py"]
         )
