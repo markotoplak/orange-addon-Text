@@ -48,7 +48,7 @@ class OWBagofWords(OWWidget):
                     self.attributesCombo.addItem(att.name)
                     self.textAttribute = indx
                     k += 1
-            if not self.textAttribute:
+            if self.textAttribute == None:
                 self.error("The data has no string attributes")
                 self.nDocuments = "N/A"; self.nStrAttributes = "N/A"; self.nWords = "N/A"
                 self.data = None
@@ -58,7 +58,7 @@ class OWBagofWords(OWWidget):
             self.nStrAttributes = k
         else:
             self.nDocuments = "N/A"; self.nStrAttributes = "N/A"; self.nWords = "N/A"
-            self.send("Bag-of-words", None)
+            self.send("Bag-of-Words", None)
             self.data = data
             return
         self.error() # clear any error message

@@ -14,7 +14,6 @@ class OWWordNgram(OWWidget):
 
     def __init__(self, parent=None, signalManager=None, name = "WordNgram"):
         OWWidget.__init__(self,parent,signalManager,name)
-        self.callbackDeposit = []
         self.inputs = [("Example Table", ExampleTable, self.dataset)]
         self.outputs = [("Example Table", ExampleTable)]
 
