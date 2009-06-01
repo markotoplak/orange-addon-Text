@@ -26,6 +26,7 @@ class OWTextDistance(OWWidget):
         OWGUI.radioButtonsInBox(self.controlArea, self, "distanceType", box = "Matrix type",
             btnLabels = ["Similarity [cos(fi)]", "Distance [1/cos(fi)]"], addSpace = True)
         OWGUI.button(self.controlArea, self, "Apply", self.apply)
+        OWGUI.rubber(self.controlArea)
         self.adjustSize()
 
     def dataset(self, data):

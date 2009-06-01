@@ -35,6 +35,7 @@ class OWBagofWords(OWWidget):
         OWGUI.radioButtonsInBox(self.controlArea, self, "norm", ["None", "L1 (Sum of elements)", "L2 (Euclidean)"], "Normalization", addSpace = True)
         
         self.attributesCombo = OWGUI.comboBox(self.controlArea, self, "textAttribute", box="Text attribute", callback=self.apply)
+        OWGUI.rubber(self.controlArea)
         self.adjustSize()        
         
     def dataset(self, data):
@@ -44,7 +45,7 @@ class OWBagofWords(OWWidget):
             k = 0
             for (indx, att) in enumerate(data.domain.attributes):
                 if isinstance(att, orange.StringVariable):
-                    self.attributesCombo.insertItem(att.name)
+                    self.attributesCombo.addItem(att.name)
                     self.textAttribute = indx
                     k += 1
             if not self.textAttribute:

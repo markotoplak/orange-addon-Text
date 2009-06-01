@@ -33,31 +33,31 @@ class OWTextFeatureSelection(OWWidget):
         #GUI
         #ca=QFrame(self.controlArea)
         #gl=QGridLayout(ca)
-        selectionbox = OWGUI.QHGroupBox('Feature selection', self.controlArea)
+        selectionbox = OWGUI.widgetBox(self.controlArea, "Feature selection", "horizontal") #OWGUI.QHGroupBox('Feature selection', self.controlArea)
 
         OWGUI.listBox(selectionbox, self, 'chosenMeasure', 'measures', box = 'Select measure', callback = self.selectionChanged)
         OWGUI.listBox(selectionbox, self, 'chosenOp', 'operators', box = 'Select operator', callback = self.selectionChanged)
 
-        boxAttrStat = QVGroupBox("Statistics for features", self.controlArea)
-        self.lblFeatNo = QLabel("No. of features: ", boxAttrStat)
-        self.lblMin = QLabel("Min: ", boxAttrStat)
-        self.lblAvg = QLabel("Avg: ", boxAttrStat)
-        self.lblMax = QLabel("Max: ", boxAttrStat)
+        boxAttrStat = OWGUI.widgetBox(self.controlArea, "Statistics for features") #QVGroupBox("Statistics for features", self.controlArea)
+        self.lblFeatNo = OWGUI.widgetLabel(boxAttrStat, "No. of features: ") #QLabel("No. of features: ", boxAttrStat)
+        self.lblMin = OWGUI.widgetLabel(boxAttrStat, "Min: ") #QLabel("Min: ", boxAttrStat)
+        self.lblAvg = OWGUI.widgetLabel(boxAttrStat, "Avg: ") #QLabel("Avg: ", boxAttrStat)
+        self.lblMax = OWGUI.widgetLabel(boxAttrStat, "Max: ") #QLabel("Max: ", boxAttrStat)
 
-        boxDocStat = QVGroupBox("Statistics for documents", self.controlArea)
-        self.lblDocNo = QLabel("No. of documents: ", boxDocStat)
-        self.lblDocAvg = QLabel("Avg: ", boxDocStat)
-        self.lblDocMax = QLabel("Max: ", boxDocStat)
-        self.lblDocMin = QLabel("Min: ", boxDocStat)
+        boxDocStat = OWGUI.widgetBox(self.controlArea, "Statistics for documents") #QVGroupBox("Statistics for documents", self.controlArea)
+        self.lblDocNo = OWGUI.widgetLabel(boxDocStat, "No. of documents: ") #QLabel("No. of documents: ", boxDocStat)
+        self.lblDocAvg = OWGUI.widgetLabel(boxDocStat, "Avg: ") #QLabel("Avg: ", boxDocStat)
+        self.lblDocMax = OWGUI.widgetLabel(boxDocStat, "Max: ") #QLabel("Max: ", boxDocStat)
+        self.lblDocMin = OWGUI.widgetLabel(boxDocStat, "Min: ") #QLabel("Min: ", boxDocStat)
 
-        optionBox = OWGUI.QVGroupBox('', selectionbox)        
+        optionBox = OWGUI.widgetBox(selectionbox, "") #OWGUI.QVGroupBox('', selectionbox)        
 
         self.applyButton = OWGUI.button(optionBox, self, "Apply", self.apply)
         self.applyButton.setDisabled(1)
         OWGUI.checkBox(optionBox, self, "perc", "percentage", callback = self.selectionChanged)
         #OWGUI.spin(optionBox, self, "threshold", 0, 10000, label="Threshold:", callback = None)
         OWGUI.lineEdit(optionBox, self, "threshold", orientation="horizontal", valueType=float, box="Threshold", callback = self.selectionChanged)
-
+        OWGUI.rubber(self.controlArea)
         self.controlArea.adjustSize()
 
 

@@ -8,7 +8,7 @@
 
 import orange
 import OWGUI
-from qt import *
+
 from OWWidget import *
 
 class OWTextFile(OWWidget):	
@@ -44,7 +44,7 @@ class OWTextFile(OWWidget):
         else:
             lastPath = "."
 
-        fn = str(QFileDialog.getOpenFileName(lastPath, "Text files (*.*)", None, "Open Text Files"))
+        fn = str(QFileDialog.getOpenFileName(self, "Open Text Files", lastPath, "Text files (*.*)"))#, None, "Open Text Files"))
         if not fn:
             return
         
@@ -67,7 +67,7 @@ class OWTextFile(OWWidget):
 
         self.filecombo.clear()
         for file in self.recentFiles:
-            self.filecombo.insertItem(os.path.split(file)[1])
+            self.filecombo.addItem(os.path.split(file)[1])
         self.filecombo.updateGeometry()
 
         self.error()

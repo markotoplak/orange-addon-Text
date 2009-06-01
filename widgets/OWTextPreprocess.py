@@ -43,11 +43,12 @@ class OWTextPreprocess(OWWidget):
 
         self.langCombo = OWGUI.comboBox(self.controlArea, self, "selectedLanguage", box="Language", addSpace=True)
         for (i, label) in enumerate(btnLabels):
-            self.langCombo.insertItem(QPixmap(os.path.dirname(__file__) + "/icons/" + self.langDict[i] +".png"), label)
-        self.langCombo.setCurrentItem(self.selectedLanguage)
+            self.langCombo.addItem(QIcon(QPixmap(os.path.dirname(__file__) + "/icons/" + self.langDict[i] +".png")), label)
+#        self.langCombo.setCurrentItem(self.selectedLanguage)
         
         self.attributesCombo = OWGUI.comboBox(self.controlArea, self, "textAttribute", box="Text attribute", callback=self.apply)
-        self.adjustSize()       
+        OWGUI.rubber(self.controlArea)
+        self.adjustSize()  
         
     def dataset(self, data):
         self.closeContext()
@@ -56,7 +57,7 @@ class OWTextPreprocess(OWWidget):
             k = 0
             for (indx, att) in enumerate(data.domain.attributes):
                 if isinstance(att, orange.StringVariable):
-                    self.attributesCombo.insertItem(att.name)
+                    self.attributesCombo.addItem(att.name)
                     self.textAttribute = indx
                     k += 1
             if not self.textAttribute:

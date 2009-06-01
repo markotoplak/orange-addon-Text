@@ -24,21 +24,20 @@ class OWLetterNgram(OWWidget):
         
         OWGUI.radioButtonsInBox(self.controlArea, self, "size", box = "Ngram size", btnLabels = ["2", "3", "4"], addSpace = True)
         OWGUI.button(self.controlArea, self, "Apply", self.apply)
-        self.lblFeatureNo = QLabel("\nNo. of features: ", self.controlArea)
+        self.lblFeatureNo = OWGUI.widgetLabel(self.controlArea, "\nNo. of features: ") # QLabel("\nNo. of features: ", self.controlArea)
         self.adjustSize()
         
         box = OWGUI.widgetBox(self.controlArea, "Text attribute", addSpace = True)
         self.textAttributePos = None
         self.attributesCombo = OWGUI.comboBox(box, self, "textAttributePos", callback = self.setTextAttribute)
-
+        OWGUI.rubber(self.controlArea)
         
-
     def dataset(self, data):
         if data:
                 self.textAttributePos = None
                 for i in range(0, len(data.domain.attributes)):
                     if isinstance(data.domain.attributes[i], orange.StringVariable):
-                        self.attributesCombo.insertItem(data.domain.attributes[i].name)
+                        self.attributesCombo.addItem(data.domain.attributes[i].name)
                         self.textAttributePos = i
                 if self.textAttributePos == None:
                     #if no attribute is chosen as text attribute, then take the one named "text"
@@ -91,9 +90,6 @@ class OWLetterNgram(OWWidget):
                 self.textAttributePos = i
                 self.textAttribute = name
                 break
-
-
-
 
 if __name__ == "__main__":
     t = orngText.loadFromXML(r'c:\test\msnbc.xml')

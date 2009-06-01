@@ -29,19 +29,20 @@ class OWWordNgram(OWWidget):
         self.measureDict = {0: 'FREQ', 1: 'MI', 2: 'DICE', 3: 'CHI', 4: 'LL'}
 
         #GUI        
-        optionBox = QHGroupBox('', self.controlArea)
+        optionBox = OWGUI.widgetBox(self.controlArea, "", "horizontal") #QHGroupBox('', self.controlArea)
         OWGUI.radioButtonsInBox(optionBox, self, "size", box = "No. of words", btnLabels = ["2", "3", "4", "Named entities"], addSpace = True, callback = self.radioChanged)
         self.ambox = OWGUI.radioButtonsInBox(optionBox, self, "measure", box = "Association measure", btnLabels = ["Frequency", "Mutual information", "Dice coefficient", "Chi square", "Log likelihood"], addSpace = True)
         self.ambox.setEnabled(self.size - 3)
-        box = QVGroupBox('', optionBox)
+        box = OWGUI.widgetBox(optionBox, "") #QVGroupBox('', optionBox)
         OWGUI.lineEdit(box, self, "threshold", orientation="horizontal", valueType=float, box="Threshold")
 
         stopbox = OWGUI.widgetBox(box, "Stopwords File")
-        stophbox = OWGUI.widgetBox(stopbox, orientation = 1)
+        stophbox = OWGUI.widgetBox(stopbox, orientation="horizontal") #1)
         self.filecombo = OWGUI.comboBox(stophbox, self, "fileIndex", callback = self.loadFile)
         OWGUI.button(stophbox, self, '...', callback = self.browseFile)
         OWGUI.button(self.controlArea, self, "Apply", self.apply)
-        self.lblFeatureNo = QLabel("\nNo. of features: ", self.controlArea)
+        self.lblFeatureNo = OWGUI.widgetLabel(self.controlArea, "\nNo. of features: ") #QLabel("\nNo. of features: ", self.controlArea)
+        OWGUI.rubber(self.controlArea)
         self.adjustSize()
 
         if self.recentFiles:
@@ -60,7 +61,7 @@ class OWWordNgram(OWWidget):
         else:
             lastPath = "."
 
-        fn = str(QFileDialog.getOpenFileName(lastPath, "Text files (*.*)", None, "Open Text Files"))
+        fn = str(QFileDialog.getOpenFileName(self, "Open Text Files", lastPath, "Text files (*.*)")) #, None, "Open Text Files"))
         if not fn:
             return
         
@@ -83,7 +84,7 @@ class OWWordNgram(OWWidget):
 
         self.filecombo.clear()
         for file in self.recentFiles:
-            self.filecombo.insertItem(os.path.split(file)[1])
+            self.filecombo.addItem(os.path.split(file)[1])
         self.filecombo.updateGeometry()
 
         self.error()
@@ -116,10 +117,7 @@ class OWWordNgram(OWWidget):
             self.send("Example Table", newdata)
         else:
             self.send("Example Table", None)
-
-
             
-
 if __name__ == "__main__":
     t = orngText.loadFromXML(r'c:\test\msnbc.xml')
     a = QApplication(sys.argv)
