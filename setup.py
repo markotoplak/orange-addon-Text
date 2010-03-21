@@ -98,9 +98,9 @@ if __name__ == "__main__":
         setup(name = "Orange Text Mining",
                 version = "0.1.0",
                 description = "Text Mining Add-On for Orange",
-                packages = [ 'widgets', 'doc' ],
+                packages = [ 'widgets', 'doc', '.' ],
 
-                package_data = {'doc': docFiles, 'widgets': ['icons/*.png']},
+                package_data = {'doc': docFiles, 'widgets': ['icons/*.png'], '.':['addon.xml'] },
 
                 py_modules = [ 'orngText', 'orngTextWrapper', 'textConfiguration'],
                 extra_path = ("orange-text", destDir),
