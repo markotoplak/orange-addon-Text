@@ -2,6 +2,7 @@
 #include "tmt/strings/StringUtils.h"
 
 #include <cerrno>
+#include <cstring>
 
 #if HAS_BOOST
 #include <boost/filesystem/path.hpp>

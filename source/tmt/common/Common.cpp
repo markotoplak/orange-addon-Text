@@ -4,6 +4,7 @@
 #include <cerrno>
 #include <cstdarg>
 #include <string>
+#include <cstring>
 #include <iostream>
 
 #if HAS_BOOST

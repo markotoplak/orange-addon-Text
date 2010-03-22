@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ******************************************************************************/
 #include "RdrLemmatizer.h"
 #include <cstdio>
+#include <cstring>
 #include <stdexcept>
 //-------------------------------------------------------------------------------------------
 //helper macros for nicer code and faster execution
