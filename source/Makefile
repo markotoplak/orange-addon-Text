@@ -15,6 +15,8 @@ else
   LINKOPTIONS = -shared -lstdc++ $(LDFLAGS)
 endif
 
+MAKEFILEDEPENDS := $(shell python -c "import sys; sys.path=['..']+sys.path; import setup; setup.writeMakeFileDepends();") #to force Makefile.depends creation on first pass
+
 all: modules
 
 Makefile.depends: ../setup.py
@@ -36,6 +38,7 @@ include Makefile.depends
 
 clean:
 	rm -f *.o ../*.so
+	rm -f ./*/*.o ./*/*/*.o
 	rm Makefile.depends
 
 .PHONY: all clean
