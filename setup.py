@@ -41,7 +41,8 @@ modules = [
                 extra_compile_args=extra_compile_args,
                 include_dirs=['.', 'source'],
                 define_macros=[('TMTNOZLIB','1'), ('NDEBUG', '1')],
-                language='c++'
+                language='c++',
+                extra_link_args=["-static-libgcc", "-static-libstdc++"] #TODO: this should only apply to mingw compiler
         )
 ]
 destDir="orange/add-ons/Text"
