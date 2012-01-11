@@ -1,18 +1,21 @@
 from distutils.core import setup
 from distutils.core import Extension
 import distutils.ccompiler
-import os, glob
+import os, sys, glob
 
-#if distutils.ccompiler.get_default_compiler() in ['unix', 'mingw32']:
 extra_compile_args=[
         '-fno-strict-aliasing',
         '-Wall',
         '-Wno-sign-compare',
         '-Woverloaded-virtual'
         ]
-#else:
-#    extra_compile_args=[]
 
+if sys.platform == "win32":
+    # For mingw compiler
+    extra_link_args=["-static-libgcc", "-static-libstdc++"] 
+else:
+    extra_link_args = []
+    
 # list all documentation files that need to be included
 docFiles = []
 for (dirp, dirns, n) in os.walk('doc'):
@@ -42,7 +45,7 @@ modules = [
                 include_dirs=['.', 'source'],
                 define_macros=[('TMTNOZLIB','1'), ('NDEBUG', '1')],
                 language='c++',
-                extra_link_args=["-static-libgcc", "-static-libstdc++"] #TODO: this should only apply to mingw compiler
+                extra_link_args=extra_link_args
         )
 ]
 destDir="orange/add-ons/Text"
@@ -105,7 +108,6 @@ if __name__ == "__main__":
 
                 py_modules = [ 'orngText', 'orngTextWrapper', 'textConfiguration'],
                 extra_path = ("orange-text", destDir),
-                ext_modules = modules,
-                scripts=["post_install_script.py"]
+                ext_modules = modules
         )
 
